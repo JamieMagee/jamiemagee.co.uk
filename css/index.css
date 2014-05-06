@@ -141,3 +141,11 @@ tr > td:first-child {
     margin-left: -0.36em;
     margin-right: -0.15em;
 }
+
+a, a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
