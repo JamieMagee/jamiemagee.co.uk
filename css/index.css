@@ -97,12 +97,20 @@ tr > td:first-child {
     width: 200px;
 }
 
+[href="http://microsoft.com"] > img {
+    display: none;
+}
+
 [href="http://cam.ac.uk"] {
     background-image: url('../img/cambridge.png');
     display: block;
     height: 41px;
     text-indent: -9999px;
     width: 200px;
+}
+
+[href="http://cam.ac.uk"] > img {
+    display: none;
 }
 
 [href="http://larnegrammar.org.uk"] {
@@ -113,12 +121,20 @@ tr > td:first-child {
     width: 200px;
 }
 
+[href="http://larnegrammar.org.uk"] > img {
+    display: none;
+}
+
 [href="http://cisco.com"] {
     background-image: url('../img/cisco.png');
     display: block;
     height: 45px;
     text-indent: -9999px;
     width: 85px;
+}
+
+[href="http://cisco.com"] > img {
+    display: none;
 }
 
 .latex sub, .latex sup {
@@ -148,4 +164,31 @@ a, a:visited {
 
 a:hover {
     text-decoration: underline;
+}
+
+@media print {
+
+    body{
+        width: 100%;
+    }
+
+    #links {
+        left:1%;
+    }
+
+    [href="http://cisco.com"] > img {
+        display: block;
+    }
+
+    [href="http://larnegrammar.org.uk"] > img {
+        display: block;
+    }
+
+    [href="http://cam.ac.uk"] > img {
+        display: block;
+    }
+
+    [href="http://microsoft.com"] > img {
+        display: block;
+    }
 }
