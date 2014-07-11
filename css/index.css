@@ -38,8 +38,8 @@ html {
 
 #links {
     float: left;
-    position: fixed;
-    top: 1%;
+    position: relative;
+    top: -35px;
 }
 
 .fa-linkedin-square {
