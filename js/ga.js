@@ -4,4 +4,5 @@
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 ga('create', 'UA-701081-9', 'jamiemagee.co.uk');
 ga('require', 'displayfeatures');
+ga('require', 'linkid', 'linkid.js');
 ga('send', 'pageview');
