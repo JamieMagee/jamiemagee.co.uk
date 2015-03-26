@@ -1,0 +1,24 @@
+author: 
+  name: 'Jamie Magee'
+  url: 'https://jamiemagee.co.uk'
+baseurl: /
+description: 'Programmer, Engineer, All Round Nice Person'
+github:
+  repo: 'https://github.com/JamieMagee/JamieMagee.github.io'
+highlighter: rouge
+markdown: kramdown
+assets:
+  js_compressor:  uglifier
+  css_compressor: sass
+  sources:
+    - _assets/images
+    - _assets/javascripts
+    - _assets/stylesheets
+    - _assets/images/posts
+paginate: 5
+permalink: pretty
+relative_permalinks: true
+tagline: 'Programmer, Engineer, All Round Nice Person'
+title: Jamie Magee
+url: 'https://jamiemagee.co.uk'
+exclude: ['LICENSE.md', 'Gemfile', 'script']
