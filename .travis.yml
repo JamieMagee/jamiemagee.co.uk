@@ -9,18 +9,3 @@ script:
 after_success:
   - chmod +x script/deploy
   - ./script/deploy
-  
-
-branches:
-  only:
-  - jekyll-test
-
-env:
-  global:
-    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
-
-sudo: false
-addons:
-  apt:
-    packages:
-      - ncftp
