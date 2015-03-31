@@ -17,4 +17,10 @@ branches:
 
 env:
   global:
-  - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+    - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
+
+sudo: false
+addons:
+  apt:
+    packages:
+      - ncftp
