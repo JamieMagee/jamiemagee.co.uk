@@ -1,144 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Jamie Magee - Curriculum Vit&#230;</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href='css/index.min.css' rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet' type='text/css'>
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" rel="stylesheet">
-</head>
-<body>
-<div class='header'>
-    <h1><span class="name">Jamie Magee</span></h1>
+---
+layout: default
+title: Home
+---
 
-    <div id="links">
-        <a href="https://www.linkedin.com/in/jamiemagee1"><i class="fa fa-linkedin-square fa-3x"></i></a>
-        <a href="https://github.com/JamieMagee"><i class="fa fa-github fa-3x"></i></a>
-    </div>
+<div class="posts">
+  {% for post in paginator.posts %}
+  <div class="post">
+    <h1 class="post-title">
+      <a href="{{ post.url }}">
+        {{ post.title }}
+      </a>
+    </h1>
 
-    <h2>Curriculum Vit&#230;</h2>
+    <span class="post-date">{{ post.date | date_to_string }}</span>
 
-    <p><a href="mailto:jamie.magee@gmail.com"><span class="email">jamie.magee@gmail.com</span></a>
-    </p>
+    {{ post.content }}
+  </div>
+  {% endfor %}
 </div>
-<div class="section main">
-    <div class="section" id="education">
-        <h2>Education</h2>
 
-        <div class="education">
-            <a href="http://cam.ac.uk"><img src="img/cambridge.png" alt="University of Cambridge" /></a>
-            <span class="summary">Instrumentation and Control Engineering (MEng)</span>
-            <span class="date-duration"><abbr title="2010-10-01">October 2010</abbr>–<abbr
-                    title="2014-06-26">June 2014</abbr></span>
-
-            <div class="description">
-                <p><span class="bold">Master’s Project:</span> Low cost imaging and image processing with the Raspberry
-                    Pi (<a href="http://openlabtools.org">OpenLabTools.org</a>)</p>
-
-                <p><span class="bold">Courses:</span> <a href="http://to.eng.cam.ac.uk/teaching/courses/y4/4f2.html">Robust and non-linear systems and control</a>, <a href="http://to.eng.cam.ac.uk/teaching/courses/y4/4e12.html">Project management</a>, <a href="http://to.eng.cam.ac.uk/teaching/courses/y4/4f1.html">Control system design</a>, <a href="http://to.eng.cam.ac.uk/teaching/courses/y4/4e4.html">Management of technology</a>, <a href="http://to.eng.cam.ac.uk/teaching/courses/y4/4f12.html">Computer vision and robotics</a>, <a href="http://to.eng.cam.ac.uk/teaching/courses/y4/4e6.html">Accounting and finance</a>, <a href="http://to.eng.cam.ac.uk/teaching/courses/y4/4f13.html">Machine learning</a>, <a href="http://to.eng.cam.ac.uk/teaching/courses/y4/4i11.html">Advanced fission and fusion systems</a></p>
-            </div>
-        </div>
-
-        <div class="education">
-            <a href="http://larnegrammar.org.uk"><img src="img/lgs.png" alt="Larne Grammar School" /></a>
-            <span class="date-duration"><abbr title="2003-09-01">September 2003</abbr>–<abbr
-                    title="2010-06-30">June 2010</abbr></span>
-
-            <div class="description">
-                <p><span class="bold">A-Levels:</span> Mathematics A*, Computing A*, Physics A*, Design and Technology A
-                </p>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="section" id="employment">
-        <h2>Work Experience</h2>
-
-        <div class="employment">
-            <a href="http://microsoft.com"><img src="img/microsoft.png" alt="Microsoft" /></a>
-            <span class="summary">Software Development Engineer</span>
-            <span class="date-duration"><abbr title="2014-07-15">July 2014</abbr>–<abbr
-                    title="">Present</abbr></span>
-
-            <div class="description">
-                <ul>
-                    <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                    <li>Sed sit amet lorem risus.</li>
-                    <li>Suspendisse sollicitudin dignissim est, sit amet eleifend purus.</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="employment">
-            <a href="http://cisco.com"><img src="img/cisco.png" alt="Cisco" /></a>
-            <span class="summary">Software Development Intern</span>
-            <span class="date-duration"><abbr title="2013-07-01">July 2013</abbr>–<abbr
-                    title="2013-09-20">September 2013</abbr></span>
-
-            <div class="description">
-                <ul>
-                    <li>Worked in the DSP team programming for embedded systems</li>
-                    <li>Designed and implemented a new region of interest detection algorithm</li>
-                    <li>Studied and worked with H.264 and HEVC video codecs and encoders</li>
-                    <li>Gained experience with pair programming and continuous integration</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <div class="section" id="skills">
-        <h2>Skills and Certifications</h2>
-        <table>
-            <tbody>
-            <tr>
-                <td>Programming</td>
-                <td>C, C++, MATLAB, Python, Javascript, HTML5 & CSS3</td>
-            </tr>
-            <tr>
-                <td>Software</td>
-                <td>GNU/Linux, Windows, <span class="latex">L<sup>a</sup>T<sub>e</sub>X</span>, Microsoft Office Suite
-                </td>
-            </tr>
-            <tr>
-                <td>Awards and Experience</td>
-                <td>Gold Duke of Edinburgh Award, President of Cambridge University Northern Ireland Society 2012-13,
-                    Treasurer of Cambridge University Athletic Club 2011-12
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="section" id="hobbies">
-        <h2>Hobbies and Interests</h2>
-        <table>
-            <tbody>
-            <tr>
-                <td>Music</td>
-                <td>Cello, Bass Guitar and Guitar</td>
-            </tr>
-            <tr>
-                <td>Sport</td>
-                <td>Athletics (Triple Jump & Long Jump) and Rowing</td>
-            </tr>
-            <tr>
-                <td>Contributions</td>
-                <td>Wikipedia, OpenStreetMap</td>
-            </tr>
-            <tr>
-                <td>Other</td>
-                <td>Reading, Travelling</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="section" id="references">
-        <h2>References</h2>
-        <p>Available on request.</p>
-    </div>
+<div class="pagination">
+  {% if paginator.next_page %}
+    <a class="pagination-item older" href="{{ site.baseurl }}page{{paginator.next_page}}">Older</a>
+  {% else %}
+    <span class="pagination-item older">Older</span>
+  {% endif %}
+  {% if paginator.previous_page %}
+    {% if paginator.page == 2 %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}">Newer</a>
+    {% else %}
+      <a class="pagination-item newer" href="{{ site.baseurl }}page{{paginator.previous_page}}">Newer</a>
+    {% endif %}
+  {% else %}
+    <span class="pagination-item newer">Newer</span>
+  {% endif %}
 </div>
-<script src="js/ga.min.js"></script>
-</body>
-</html>

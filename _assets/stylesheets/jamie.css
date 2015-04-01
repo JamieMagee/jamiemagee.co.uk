@@ -1,0 +1,17 @@
+/* = require poole */
+/* = require syntax */
+/* = require hyde */
+
+.fa {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.fa:hover {
+    color: rgba(255, 255, 255, 1);
+}
+
+.center-image
+{
+    margin: 0 auto;
+    display: block;
+}
