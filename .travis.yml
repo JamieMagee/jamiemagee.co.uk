@@ -13,9 +13,9 @@ after_success:
 branches:
   only:
     - master
-	
+
 sudo: false
 addons:
   apt:
     packages:
-	  - ncftp
+      - ncftp
