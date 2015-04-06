@@ -11,4 +11,4 @@ This site is my online home for all things code, or otherwise...
 
 ...but mainly code.
 
-{% image profile.png alt="Profile" class="center-image" %}
+<img class="center-img" src="{{ site.baseurl }}img/profile.png" alt="Profile">

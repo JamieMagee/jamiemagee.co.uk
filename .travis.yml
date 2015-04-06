@@ -2,13 +2,19 @@ language: ruby
 rvm:
   - 2.2
 
+before_install: npm install -g grunt-cli
+
+install:
+  - bundle install
+  - npm install
+
 script:
-  - chmod +x script/build
-  - ./script/build
+  - grunt serve:dist
+  - bundle exec htmlproof ./_site
 
 after_success:
-  - chmod +x script/deploy
-  - ./script/deploy
+  - chmod +x deploy.sh
+  - ./deploy.sh
   
 branches:
   only:
