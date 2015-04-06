@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     // Show elapsed time after tasks run
     require('time-grunt')(grunt);
     // Load all Grunt tasks
@@ -238,22 +238,22 @@ module.exports = function(grunt) {
             }
         },
         copy: {
-            server: {
+            dist: {
                 files: [{
-                    flatten:true,
+                    flatten: true,
                     expand: true,
                     dot: true,
                     filter: 'isFile',
                     cwd: '<%= app.source %>/_assets',
                     src: ['img/**/*'],
-                    dest: '.tmp/img'
+                    dest: '<%= app.dist %>/img'
                 }]
             }
         }
     });
 
     // Define Tasks
-    grunt.registerTask('serve', function(target) {
+    grunt.registerTask('serve', function (target) {
         if (target === 'dist') {
             return grunt.task.run(['build', 'connect:dist:keepalive']);
         }
@@ -261,7 +261,6 @@ module.exports = function(grunt) {
         grunt.task.run([
             'clean:server',
             'jekyll:server',
-            'copy:server',
             'concat_css:server',
             'autoprefixer:server',
             'uglify:server',
@@ -273,6 +272,7 @@ module.exports = function(grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'jekyll:dist',
+        'copy',
         'imagemin',
         'svgmin',
         'concat_css:dist',
