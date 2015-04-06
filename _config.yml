@@ -7,14 +7,9 @@ github:
   repo: 'https://github.com/JamieMagee/JamieMagee.github.io'
 highlighter: rouge
 markdown: kramdown
-assets:
-  js_compressor: uglifier
-  css_compressor: sass
-  sources:
-    - _assets/images
-    - _assets/javascripts
-    - _assets/stylesheets
-    - _assets/images/posts
+exclude: ['img', 'css', 'js', 'fonts', '**.png', '**.jpg', '**.jpeg', '**.gif', '**.webp', '**.svg', '**.ico']
+future: true
+show_drafts: true
 paginate: 5
 permalink: pretty
 relative_permalinks: true

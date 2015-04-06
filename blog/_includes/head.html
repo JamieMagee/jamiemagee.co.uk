@@ -15,15 +15,15 @@
     </title>
 
     <!-- CSS -->
-    {{ 'jamie' | stylesheet}}
+    <link rel="stylesheet" href="{{ site.baseurl }}css/blog.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
     <!-- Icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144"
-          href="{{ 'apple-touch-icon-144-precomposed.png' | asset_path }}">
-    <link rel="shortcut icon" href="{{ 'favicon.ico' | asset_path }}">
+          href="{{ site.baseurl }}img/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="{{ site.baseurl }}img/favicon.ico">
 
     <!-- RSS -->
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ site.baseurl }}atom.xml">
 </head>
