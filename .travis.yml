@@ -9,7 +9,7 @@ install:
   - npm install
 
 script:
-  - grunt serve:dist
+  - grunt build
   - bundle exec htmlproof ./_site
 
 after_success:
