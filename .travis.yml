@@ -28,6 +28,7 @@ addons:
 cache:
   directories:
     - vendor/bundle
+	- node_modules
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
