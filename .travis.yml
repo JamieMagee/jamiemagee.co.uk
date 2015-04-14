@@ -25,7 +25,9 @@ addons:
   apt:
     packages:
       - ncftp
-cache: bundler
+cache:
+  directories:
+    - vendor/bundle
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
