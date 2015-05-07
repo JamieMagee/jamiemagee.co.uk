@@ -119,5 +119,6 @@ DLR Kredit achieves a C, despite the fact they are vulnerable to POODLE, because
 
 Jyske Bank and Sydbank appear to use the same server configuration as their results are equally bad. They both have disabled SSL 3, and have a complete certificate chain signed using SHA256, but fail on all other tests. In addition, both banks are intolerant to TLS versions, meaning if their websites are badly written they may stop working when new TLS versions comes out.
 
+Finally we have Nykredit, who fares worst of all. Their server sent unnecessary certificates, signed using SHA1, which causes them to fail this test. They only support TLS 1.0 and SSL 3, but their server's preferred cipher is RC4. Most worrying is the lack of support for secure renegotiation. This vulnerability is nearly 5 years old, and allows a man-in-the-middle to inject arbitrary content to an encrypted session.
 
 Overall it's not looking too good. A lot of Denmark's biggest banks are not as secure as they would have you believe. Many are vulnerable to a lot of different avenues of attack - the most worrying being POODLE. These results are similar to those in Troy Hunt's original article, and just go to show that just because something is "bank grade" doesn't necessarily mean that it's actually good.
