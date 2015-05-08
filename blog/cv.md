@@ -65,7 +65,7 @@ Larne Grammar School
 Skills and Certifications
 =========================
 
-| **Programming**           | C, C++, C#, X++, SQL, .NET, Python, Python, Javascript, HTML5 & CSS3  |
+| **Programming**           | C, C++, C#, X++, SQL, .NET, Python, Javascript, HTML5 & CSS3  |
 | **Software**              | GNU/Linux, Windows, LATEX, Microsoft Office Suite |
 | **Awards and Experience** |Gold Duke of Edinburgh Award, President of Cambridge University Northern Ireland Society 2012-13, Treasurer of Cambridge University Athletic Club 2011-12 |
 
