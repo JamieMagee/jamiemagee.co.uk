@@ -11,9 +11,7 @@ Microsoft
 
 Software Development Engineer - *July 2014-Present*
 
-* Part of the Inventory Management R&D team for Microsoft Dynamics AX
-* Maintained and developed the inventory management framework
-* Gained domain knowledge of supply chain management
+* Software Developer on Microsoft Social Engagement
 * Developed cloud-enabled software to be deployed on Azure
 * Used agile development practices such as SCRUM and TDD
 
