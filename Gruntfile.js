@@ -160,9 +160,12 @@ module.exports = function (grunt) {
                 dest: '<%= app.dist %>/css/blog.css'
             }
         },
-        autoprefixer: {
+        postcss: {
             options: {
-                browsers: ['last 3 versions']
+                map: true,
+                processors: [
+                    require('autoprefixer')({browsers: ['last 1 version']})
+                ]
             },
             server: {
                 files: [{
@@ -263,7 +266,7 @@ module.exports = function (grunt) {
             'clean:server',
             'jekyll:server',
             'concat_css:server',
-            'autoprefixer:server',
+            'postcss:server',
             'uglify:server',
             'connect:livereload',
             'watch'
@@ -277,7 +280,7 @@ module.exports = function (grunt) {
         'imagemin',
         'svgmin',
         'concat_css:dist',
-        'autoprefixer',
+        'postcss',
         'cssmin',
         'uglify:dist',
         'critical',
