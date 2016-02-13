@@ -1,1 +1,1 @@
-[![Build Status](https://travis-ci.org/JamieMagee/jamiemagee.co.uk.svg?branch=master)](https://travis-ci.org/JamieMagee/jamiemagee.co.uk)
+[![Build Status](https://travis-ci.org/JamieMagee/jamiemagee.co.uk.svg?branch=master)](https://travis-ci.org/JamieMagee/jamiemagee.co.uk) [![devDependency Status](https://david-dm.org/jamiemagee/jamiemagee.co.uk/dev-status.svg)](https://david-dm.org/jamiemagee/jamiemagee.co.uk#info=devDependencies)
