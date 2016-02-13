@@ -4,15 +4,15 @@ author:
 baseurl: /
 description: 'Programmer, Engineer, All Round Nice Person'
 github:
-  repo: 'https://github.com/JamieMagee/JamieMagee.github.io'
+  repo: 'https://github.com/JamieMagee/jamiemagee.co.uk'
 highlighter: rouge
 markdown: kramdown
 exclude: ['img', 'css', 'js', 'fonts', '**.png', '**.jpg', '**.jpeg', '**.gif', '**.webp', '**.svg', '**.ico']
 future: true
 show_drafts: true
+gems: [jekyll-paginate]
 paginate: 5
 permalink: pretty
-relative_permalinks: true
 tagline: 'Programmer, Engineer, All Round Nice Person'
 title: Jamie Magee
 url: 'https://jamiemagee.co.uk'
