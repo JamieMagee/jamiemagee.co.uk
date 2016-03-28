@@ -2,7 +2,10 @@ language: ruby
 rvm:
   - 2.2
 
-before_install: npm install -g grunt-cli
+before_install:
+  - nvm install 0.12
+  - nvm use 0.12
+  - npm install -g grunt-cli
 
 install:
   - bundle install
@@ -10,7 +13,7 @@ install:
 
 script:
   - grunt build
-  - bundle exec htmlproof ./_site --href-ignore linkedin.com
+  - bundle exec htmlproofer ./_site --url-ignore linkedin.com
 
 after_success:
   - chmod +x deploy.sh
@@ -25,10 +28,6 @@ addons:
   apt:
     packages:
       - ncftp
-cache:
-  directories:
-    - vendor/bundle
-    - node_modules
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
