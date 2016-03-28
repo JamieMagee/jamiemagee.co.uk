@@ -10,7 +10,7 @@ install:
 
 script:
   - grunt build
-  - bundle exec htmlproof ./_site --href-ignore linkedin.com
+  - bundle exec htmlproofer ./_site --href-ignore linkedin.com
 
 after_success:
   - chmod +x deploy.sh
