@@ -3,7 +3,7 @@ rvm:
   - 2.3.0
 
 before_install:
-  - nvm install 4.4
+  - nvm install 5.9
   - npm install -g grunt-cli
 
 install:
