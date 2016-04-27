@@ -5,7 +5,7 @@
   "author": "Jamie Magee",
   "devDependencies": {
     "autoprefixer": "6.x",
-    "grunt": "0.x",
+    "grunt": "1.x",
     "grunt-build-control": "0.x",
     "grunt-concat-css": "0.x",
     "grunt-contrib-clean": "1.x",
