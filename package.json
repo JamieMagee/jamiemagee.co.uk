@@ -17,11 +17,11 @@
     "grunt-contrib-imagemin": "1.x",
     "grunt-contrib-uglify": "2.x",
     "grunt-contrib-watch": "1.x",
-    "grunt-critical": "1.x",
+    "grunt-critical": "0.x",
     "grunt-jekyll": "0.x",
     "grunt-postcss": "0.x",
     "grunt-sass": "1.x",
-    "grunt-svgmin": "4.x",
+    "grunt-svgmin": "3.x",
     "grunt-uncss": "0.x",
     "jit-grunt": "0.x",
     "time-grunt": "1.x"
