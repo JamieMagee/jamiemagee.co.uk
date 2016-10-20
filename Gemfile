@@ -1,5 +1,3 @@
 source 'https://rubygems.org'
-gem 'github-pages'
-gem 'rouge'
-gem 'html-proofer'
-gem 'jekyll-paginate'
+gem 'github-pages', '98'
+gem 'html-proofer', '3.3.1'
