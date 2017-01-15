@@ -1,3 +1,3 @@
 source 'https://rubygems.org'
-gem 'github-pages', '109'
-gem 'html-proofer', '3.3.1'
+gem 'github-pages', '115'
+gem 'html-proofer', '3.4.0'
