@@ -9,6 +9,7 @@ before_install:
 install:
   - bundle install
   - npm install
+  - sudo update-ca-certificates
 
 script:
   - grunt build
