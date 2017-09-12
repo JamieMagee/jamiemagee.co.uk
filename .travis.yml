@@ -13,7 +13,7 @@ install:
 
 script:
   - grunt build
-  - bundle exec htmlproofer ./_site --url-ignore linkedin.com
+  - bundle exec htmlproofer ./_site --url-ignore linkedin.com troyhunt.com
 
 after_success:
   - chmod +x deploy.sh
