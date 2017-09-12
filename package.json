@@ -4,7 +4,7 @@
   "description": "website dependencies",
   "author": "Jamie Magee",
   "devDependencies": {
-    "autoprefixer": "^7.1.1",
+    "autoprefixer": "^7.1.4",
     "grunt": "1.x",
     "grunt-build-control": "0.x",
     "grunt-concat-css": "0.x",
@@ -15,7 +15,7 @@
     "grunt-contrib-cssmin": "2.x",
     "grunt-contrib-htmlmin": "2.x",
     "grunt-contrib-imagemin": "^2.0.1",
-    "grunt-contrib-uglify": "^3.0.1",
+    "grunt-contrib-uglify": "^3.1.0",
     "grunt-contrib-watch": "1.x",
     "grunt-critical": "0.x",
     "grunt-jekyll": "0.x",
