@@ -4,7 +4,7 @@ title: Do you really want "bank grade" security in your SSL? Danish edition
 comments: true
 ---
 
-I recently saw an article on [/r/programming](https://www.reddit.com/r/programming) called [Do you really want "bank grade" security in your SSL? Here's how Aussie banks fare]( https://www.troyhunt.com/do-you-really-want-bank-grade-security.html). The author used the [Qualys SSL Labs test](https://www.ssllabs.com/ssltest/) to determine how good Aussie banks' SSL implementations really are. I thought the article was great, and gave good, actionable feedback. At the time of writing this two of the banks listed have already improved their SSL scores.
+I recently saw an article on [/r/programming](https://www.reddit.com/r/programming) called [Do you really want "bank grade" security in your SSL? Here's how Aussie banks fare](https://www.troyhunt.com/do-you-really-want-bank-grade-security). The author used the [Qualys SSL Labs test](https://www.ssllabs.com/ssltest/) to determine how good Aussie banks' SSL implementations really are. I thought the article was great, and gave good, actionable feedback. At the time of writing this two of the banks listed have already improved their SSL scores.
 
 It got me thinking: how well (or badly) do banks in Denmark fare? We put our trust - and our money - in these banks, but do they really deserve it? The banks I'll be testing come from the [list of systemically important banks](https://en.wikipedia.org/wiki/List_of_systemically_important_banks), more commonly known as "Too big to fail." The list consists of:
  
