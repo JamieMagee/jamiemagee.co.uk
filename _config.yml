@@ -10,7 +10,8 @@ markdown: kramdown
 exclude: ['img', 'css', 'js', 'fonts', '**.png', '**.jpg', '**.jpeg', '**.gif', '**.webp', '**.svg', '**.ico']
 future: true
 show_drafts: true
-gems: [jekyll-paginate]
+plugins:
+  - jekyll-paginate
 paginate: 5
 permalink: pretty
 tagline: 'Programmer, Engineer, All Round Nice Person'
