@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - 2.3.1
+  - 2.4.1
 
 before_install:
   - nvm install node
@@ -9,11 +9,10 @@ before_install:
 install:
   - bundle install
   - npm install
-  - sudo update-ca-certificates
 
 script:
   - grunt build
-  - bundle exec htmlproofer ./_site --url-ignore "linkedin.com,troyhunt.com"
+  - bundle exec htmlproofer ./_site --url-ignore linkedin.com,troyhunt.com
 
 after_success:
   - chmod +x deploy.sh
