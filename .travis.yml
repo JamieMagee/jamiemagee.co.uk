@@ -28,6 +28,7 @@ addons:
   apt:
     packages:
       - ncftp
+      - libcurl3-dev
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
