@@ -47,24 +47,24 @@ The rest of the scraper itself is quite simple, but you can read the full code [
 Results
 -------
 
-Scraping the full Alexa top 1 million websites list took around 24 hours. Once it was finished, I had around 700k robots.txt files
+Scraping the full Alexa top 1 million websites list took around 24 hours. Once it was finished, I had just under 700k robots.txt files
 
 ```bash
 $ find -type f | wc -l
-7xxxxxx
+677686
 ```
-totalling approximately 521MB
+totalling 493MB
  
 ```bash
 $ du -sh
-183M	.
+493M	.
 ```
  
-The smallest `robots.txt` was 1 byte[^1], but the largest was over xxMB!
+The smallest `robots.txt` was 1 byte[^1], but the largest was over 5MB!
 
 ```bash
 $ find -type f -exec du -Sh {} + | sort -rh | head -n 1
-996K	./gobankingrates.com
+5.6M	./haberborsa.com.tr
 
 $ find -not -empty -type f -exec du -b {} + | sort -h | head -n 1
 1	./0434.cc
