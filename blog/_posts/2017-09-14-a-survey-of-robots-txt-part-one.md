@@ -75,6 +75,6 @@ The full dataset is released under the [Open Database License (ODbL) v1.0](https
 What's next?
 ------------
 
-
+In the next part of this blog series I'm going to analyse the all the `robots.txt` to see if I can find anything interesting. In particular I'd like to know why exactly someone needs a `robots.txt` file over 5MB in size, what is the most common web crawler listed, either allowed or blocked, and are there any sites practising security by obscurity trying to keep links out of search engines!
 
 [^1]: I needed to include `-not -empty` when looking for the smallest file, as there were errors when decoding the response body for some domains. I've included the empty files in the dataset for posterity, but I will exclude them from further analysis.
