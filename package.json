@@ -4,7 +4,7 @@
   "description": "website dependencies",
   "author": "Jamie Magee",
   "devDependencies": {
-    "autoprefixer": "^7.1.4",
+    "autoprefixer": "^8.1.0",
     "grunt": "1.x",
     "grunt-build-control": "0.x",
     "grunt-concat-css": "0.x",
