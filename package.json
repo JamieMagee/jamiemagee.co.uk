@@ -17,7 +17,7 @@
     "grunt-contrib-imagemin": "^2.0.1",
     "grunt-contrib-uglify": "^3.1.0",
     "grunt-contrib-watch": "1.x",
-    "grunt-critical": "0.x",
+    "grunt-critical": "1.x",
     "grunt-jekyll": "0.x",
     "grunt-postcss": "0.x",
     "grunt-sass": "2.x",
