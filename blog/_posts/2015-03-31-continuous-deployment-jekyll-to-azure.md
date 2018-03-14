@@ -24,7 +24,7 @@ Azure
 
 First of all you need to create an Azure Web App.
 
-* Go to the [Azure management site](https://manage.windowsazure.com)
+* Go to the [Azure Portal](https://portal.azure.com)
 * Click New > Compute > Web App > Quick Create
 * Enter the URL you want and select an app service plan
 
