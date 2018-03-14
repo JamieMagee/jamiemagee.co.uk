@@ -21,7 +21,7 @@
     "grunt-jekyll": "0.x",
     "grunt-postcss": "0.x",
     "grunt-sass": "2.x",
-    "grunt-svgmin": "4.x",
+    "grunt-svgmin": "5.x",
     "grunt-uncss": "0.x",
     "jit-grunt": "0.x",
     "time-grunt": "1.x"
