@@ -15,6 +15,10 @@ script:
 
 deploy:
   provider: azure_web_apps
+  skip_cleanup: true
+  on:
+    branch: master
+
 
 env:
   global:

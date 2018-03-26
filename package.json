@@ -7,7 +7,7 @@
     "a11y": "a11y '_site/**/*.html'",
     "clean": "rm -rf _site && rm -rf .tmp",
     "concat:css":
-      "mkdir -p .tmp/css && cat blog/_assets/css/{poole,syntax,hyde,jamie}.css >> .tmp/css/blog.css",
+      "mkdir -p .tmp/css && cat blog/_assets/css/* >> .tmp/css/blog.css",
     "crass": "crass .tmp/css/blog.css --optimize --O1 > _site/css/blog.css",
     "critical":
       "critical _site/index.html --base _site --minify --css _site/css/blog.css --inline > .tmp/index.html",
