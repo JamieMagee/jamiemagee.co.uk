@@ -41,6 +41,7 @@ df.sample(5)
     .dataframe tbody tr th {
         vertical-align: top;
     }
+
 </style>
 <table border="1" class="dataframe">
   <thead>
@@ -125,7 +126,7 @@ large['host'] = large.apply(lambda x: count_directives('Host', x), axis=1)
 large
 ```
 
-<div>
+<div style="overflow-x: scroll" markdown="block">
 <style>
     .dataframe thead tr:only-child th {
         text-align: right;
@@ -138,6 +139,7 @@ large
     .dataframe tbody tr th {
         vertical-align: top;
     }
+
 </style>
 <table border="1" class="dataframe">
   <thead>
@@ -404,6 +406,7 @@ small.head(5)
     .dataframe tbody tr th {
         vertical-align: top;
     }
+
 </style>
 <table border="1" class="dataframe">
   <thead>
@@ -470,6 +473,7 @@ small.head(5)
     .dataframe tbody tr th {
         vertical-align: top;
     }
+
 </style>
 <table border="1" class="dataframe">
   <thead>
