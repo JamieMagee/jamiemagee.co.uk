@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - "stable"
+  - "2.5"
 
 sudo: false
 addons:
