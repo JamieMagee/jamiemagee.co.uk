@@ -3,39 +3,34 @@ layout: page
 title: Curriculum Vitae
 ---
 
-Work Experience
-===============
+# Work Experience
 
-Microsoft
----------
+## Microsoft
 
-Software Development Engineer - *July 2014-Present*
+Software Development Engineer - _July 2014-Present_
 
 * Software Developer on Microsoft Social Engagement
 * Developed cloud-enabled software to be deployed on Azure
 * Used agile development practices such as SCRUM and TDD
 
-Cisco
------
+## Cisco
 
-Software Development Intern - *July 2013–September 2013*
+Software Development Intern - _July 2013–September 2013_
 
 * Worked in the DSP team programming for embedded systems
 * Designed and implemented a new region of interest detection algorithm
 * Studied and worked with H.264 and HEVC video codecs and encoders
 * Gained experience with pair programming and continuous integration
 
-Education
-=========
+# Education
 
-University of Cambridge
------------------------
+## University of Cambridge
 
-Instrumentation and Control Engineering (MEng) - *2010-2014*
+Instrumentation and Control Engineering (MEng) - _2010-2014_
 
 ### Master’s Project
 
-Low cost imaging and image processing with the Raspberry Pi ([OpenLabTools.org](http://openlabtools.org/))
+Low cost imaging and image processing with the Raspberry Pi ([OpenLabTools.org](http://www.openlabtools.org/))
 
 ### Courses
 
@@ -48,29 +43,26 @@ Low cost imaging and image processing with the Raspberry Pi ([OpenLabTools.org](
 * Machine learning
 * Advanced fission and fusion systems
 
-Larne Grammar School
---------------------
+## Larne Grammar School
 
-*2003-2010*
+_2003-2010_
 
 ### A-Levels
 
-* Mathematics A*
-* Computing A*
-* Physics A*
+* Mathematics A\*
+* Computing A\*
+* Physics A\*
 * Design and Technology A
 
-Skills and Certifications
-=========================
+# Skills and Certifications
 
-| **Programming**           | C, C++, C#, X++, SQL, .NET, Python, Javascript, HTML5 & CSS3  |
-| **Software**              | GNU/Linux, Windows, LATEX, Microsoft Office Suite |
+| **Programming** | C, C++, C#, X++, SQL, .NET, Python, Javascript, HTML5 & CSS3 |
+| **Software** | GNU/Linux, Windows, LATEX, Microsoft Office Suite |
 | **Awards and Experience** |Gold Duke of Edinburgh Award, President of Cambridge University Northern Ireland Society 2012-13, Treasurer of Cambridge University Athletic Club 2011-12 |
 
-Hobbies and Interests
-=====================
+# Hobbies and Interests
 
-| **Music**         | Cello, bass guitar and guitar |
-| **Sport**         | Athletics (triple jump and long jump) and rowing |
+| **Music** | Cello, bass guitar and guitar |
+| **Sport** | Athletics (triple jump and long jump) and rowing |
 | **Contributions** | Github, Wikipedia and OpenStreetMap |
-| **Other**         | Gaming and OSS |
+| **Other** | Gaming and OSS |

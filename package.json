@@ -28,7 +28,7 @@
     "start":
       "npm run build -s && parallelshell \"npm run serve -s\" \"npm run watch:jekyll -s\"",
     "watch:jekyll":
-      "chokidar 'blog/index.html' 'blog/_includes/*.html' 'blog/_layouts/*.html' 'blog/_posts/*' -c 'npm run build:jekyll:dev && browser-sync reload'",
+      "chokidar 'blog/index.html' 'blog/_includes/*.html' 'blog/_layouts/*.html' 'blog/_posts/*' -c 'npm run build && browser-sync reload'",
     "watch:css":
       "chokidar 'blog/_assets/css/*' -c 'npm run build:css && browser-sync reload'"
   },

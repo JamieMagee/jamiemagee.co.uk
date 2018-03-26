@@ -7,11 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
     <title>
-        {% if page.title == "Home" %}
-        {{ site.title }} &middot; {{ site.tagline }}
-        {% else %}
-        {{ page.title }} &middot; {{ site.title }}
-        {% endif %}
+        {% if page.title == "Home" %} {{ site.title }} &middot; {{ site.tagline }} {% else %} {{ page.title }} &middot; {{ site.title
+        }} {% endif %}
     </title>
 
     <!-- CSS -->
@@ -20,8 +17,7 @@
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144"
-          href="{{ site.baseurl }}img/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ site.baseurl }}img/apple-touch-icon-144-precomposed.png">
     <link rel="shortcut icon" href="{{ site.baseurl }}img/favicon.ico">
     <meta name="theme-color" content="#75b5aa">
 
