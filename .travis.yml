@@ -2,6 +2,13 @@ language: ruby
 rvm:
   - "2.4"
 
+sudo: false
+addons:
+  apt:
+    packages:
+      - ncftp
+      - libcurl3-dev
+
 before_install:
   - nvm install node
 
@@ -13,12 +20,9 @@ script:
   - npm run build:dist
 #  - bundle exec htmlproofer ./_site
 
-deploy:
-  provider: azure_web_apps
-  skip_cleanup: true
-  on:
-    branch: master
-
+after_success:
+  - chmod +x deploy.sh
+  - ./deploy.sh
 
 env:
   global:
