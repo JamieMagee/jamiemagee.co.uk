@@ -1,12 +1,10 @@
 #!/bin/bash
 set -e
+if [ "$TRAVIS_BRANCH" == "master"]; then
+  zip -r website.zip _site
 
-if [ "$TRAVIS_BRANCH" == "master" ]; then
-  ncftp -u "$USERNAME" -p "$PASSWORD" "$HOST"<<EOF
-  rm -rf site/wwwroot
-  mkdir site/wwwroot
-  quit
-EOF
-  cd _site || exit
-  ncftpput -R -v -u "$USERNAME" -p "$PASSWORD" "$HOST" /site/wwwroot .
+  curl -H "Content-Type: application/zip" \
+      -H "Authorization: Bearer $API_KEY" \
+      --data-binary "@website.zip" \
+      https://api.netlify.com/api/v1/sites/"$SITE_ID"/deploys
 fi

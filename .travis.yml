@@ -2,13 +2,6 @@ language: ruby
 rvm:
   - "2.5"
 
-sudo: false
-addons:
-  apt:
-    packages:
-      - ncftp
-      - libcurl3-dev
-
 before_install:
   - nvm install node
 
