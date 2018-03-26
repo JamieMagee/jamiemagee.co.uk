@@ -11,7 +11,7 @@ install:
 
 script:
   - npm run build:dist
-  - bundle exec htmlproofer ./_site
+#  - bundle exec htmlproofer ./_site
 
 deploy:
   provider: azure_web_apps
