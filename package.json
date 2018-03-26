@@ -1,32 +1,48 @@
 {
   "name": "jamiemagee.co.uk",
-  "version": "0.0.1",
-  "description": "website dependencies",
+  "version": "1.0.0",
+  "description": "My Jekyll blog",
   "author": "Jamie Magee",
-  "devDependencies": {
-    "autoprefixer": "^8.1.0",
-    "grunt": "1.x",
-    "grunt-build-control": "0.x",
-    "grunt-concat-css": "0.x",
-    "grunt-contrib-clean": "1.x",
-    "grunt-contrib-concat": "1.x",
-    "grunt-contrib-connect": "1.x",
-    "grunt-contrib-copy": "1.x",
-    "grunt-contrib-cssmin": "2.x",
-    "grunt-contrib-htmlmin": "2.x",
-    "grunt-contrib-imagemin": "^2.0.1",
-    "grunt-contrib-uglify": "^3.1.0",
-    "grunt-contrib-watch": "1.x",
-    "grunt-critical": "1.x",
-    "grunt-jekyll": "0.x",
-    "grunt-postcss": "0.x",
-    "grunt-sass": "2.x",
-    "grunt-svgmin": "5.x",
-    "grunt-uncss": "0.x",
-    "jit-grunt": "0.x",
-    "time-grunt": "1.x"
+  "scripts": {
+    "a11y": "a11y '_site/**/*.html'",
+    "clean": "rm -rf _site && rm -rf .tmp",
+    "concat:css":
+      "mkdir -p .tmp/css && cat blog/_assets/css/* >> .tmp/css/blog.css",
+    "crass": "crass .tmp/css/blog.css --optimize --O1 > _site/css/blog.css",
+    "critical":
+      "critical _site/index.html --base _site --minify --css _site/css/blog.css --inline > .tmp/index.html",
+    "imagemin": "imagemin blog/_assets/img/{**/*,*} --out-dir=_site/img",
+    "build:css": "npm run concat:css && mkdir -p _site/css && npm run crass",
+    "build:html": "npm run critical && cp .tmp/index.html _site/index.html",
+    "build:images": "npm run imagemin",
+    "build:jekyll:dev": "jekyll build --config _config.yml,_config-dev.yml",
+    "build:jekyll": "jekyll build --config _config.yml",
+    "build:js":
+      "mkdir -p _site/js && cp blog/_assets/js/ga.js _site/js/scripts.js",
+    "build":
+      "npm run clean && npm run build:jekyll:dev && npm run build:css && npm run build:js && npm run build:images",
+    "build:dist":
+      "npm run clean && npm run build:jekyll && npm run build:css && npm run build:js && npm run build:images",
+    "pagespeed": "psi jamiemagee.co.uk --strategy=mobile",
+    "serve": "browser-sync start --https --server _site",
+    "start":
+      "npm run build -s && parallelshell \"npm run serve -s\" \"npm run watch:jekyll -s\"",
+    "watch:jekyll":
+      "chokidar 'blog/index.html' 'blog/_includes/*.html' 'blog/_layouts/*.html' 'blog/_posts/*' -c 'npm run build && browser-sync reload'",
+    "watch:css":
+      "chokidar 'blog/_assets/css/*' -c 'npm run build:css && browser-sync reload'"
   },
-  "engines": {
-    "node": ">=0.10.0"
+  "devDependencies": {
+    "a11y": "0.5.1",
+    "browser-sync": "2.23.6",
+    "chokidar-cli": "1.2.0",
+    "chokidar": "2.0.3",
+    "crass": "0.12.3",
+    "critical": "1.2.1",
+    "imagemin-cli": "3.0.0",
+    "imagemin": "5.3.1",
+    "parallelshell": "3.0.2",
+    "psi": "3.1.0",
+    "watch": "1.0.2"
   }
 }

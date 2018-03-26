@@ -1,0 +1,5 @@
+future: true
+show_drafts: true
+
+baseurl: /
+url: "https://locahost:3000"
