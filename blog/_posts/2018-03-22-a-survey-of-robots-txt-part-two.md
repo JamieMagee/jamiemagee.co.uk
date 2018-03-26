@@ -1,7 +1,5 @@
 ---
-layout: post
 title: A survey of robots.txt - part two
-comments: true
 ---
 
 In [part one](https://jamiemagee.co.uk/2017/09/19/a-survey-of-robots-txt-part-one/) of this article, I collected `robots.txt` from the top 1 million sites on the web. In this article I'm going to do some analysis, and see if there's anything interesting to find from all the files I've collected.

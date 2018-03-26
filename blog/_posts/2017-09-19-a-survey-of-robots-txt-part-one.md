@@ -1,7 +1,5 @@
 ---
-layout: post
 title: A survey of robots.txt - part one
-comments: true
 ---
 
 After reading [CollinMorris's analysis of favicons](https://www.kaggle.com/colinmorris/unusual-favicons-a-brief-survey) of the top 1 million sites on the web, I thought it would be interesting to do the same for other common parts of websites that often get overlooked.

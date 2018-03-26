@@ -1,7 +1,5 @@
 ---
-layout: post
 title: Continuously deploy Jekyll to Azure Web Apps
-comments: true
 ---
 
 I've been thinking about writing a blog for a while now, but there are just so many blogging platforms out there to choose from. I finally settled on Jekyll as it's really lightweight (compared to platforms like Wordpress), it has an active development community, and you can write all your articles in Markdown.

@@ -1,7 +1,5 @@
 ---
-layout: post
 title: Setting up nginx reverse proxy with Let's Encrypt on unRAID
-comments: true
 ---
 
 Late last year I set about building a new NAS to replace my aging HP ProLiant MicroServer N36L (though that's a story for a different post). I decided to go with unRAID as my OS, over FreeNAS that I'd been running previously, mostly due to the simpler configuration, ease of expanding an array, and support for Docker and KVM.

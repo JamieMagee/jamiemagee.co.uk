@@ -18,6 +18,14 @@ tagline: 'Programmer, Engineer, All Round Nice Person'
 title: Jamie Magee
 url: 'https://jamiemagee.co.uk'
 
+defaults:
+  -
+    scope:
+      path: "_posts"
+    values:
+      comments: true
+      layout: post
+
 compress_html:
   clippings: []
   comments: []
