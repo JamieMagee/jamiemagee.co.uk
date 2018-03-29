@@ -26,7 +26,7 @@ df['size'] = df.apply(lambda x: os.path.getsize('robots-txt/' + x['domain']), ax
 df.sample(5)
 ```
 
-<div>
+<div style="overflow-x: scroll" markdown="block">
 <style>
     .dataframe thead tr:only-child th {
         text-align: right;
