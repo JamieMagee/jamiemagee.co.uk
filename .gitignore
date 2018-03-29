@@ -166,4 +166,5 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/ruby,node,linux,jekyll,windows,visualstudiocode
 
-.tmp/
+.tmp
+.tweet-cache
