@@ -11,6 +11,11 @@
         "reveal": "always",
         "panel": "new"
       }
+    },
+    {
+      "type": "npm",
+      "script": "start",
+      "problemMatcher": []
     }
   ]
 }
