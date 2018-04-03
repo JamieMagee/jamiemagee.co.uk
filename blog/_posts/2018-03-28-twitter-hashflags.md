@@ -74,4 +74,4 @@ Hashflags.FETCH().then(val => {
 });
 ```
 
-So there you have it, a quick introduction to Twitter hashflags via Azure Functions and an npm library. If you've got any questions please leave a comment below, or reach out to me on Twitter [@Jamie_Magee](https://twitter.com/Jamie_Magee)
+So there you have it, a quick introduction to Twitter hashflags via Azure Functions and an npm library. If you've got any questions please leave a comment below, or reach out to me on Twitter [@Jamie_Magee](https://twitter.com/Jamie_Magee).
