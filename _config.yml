@@ -10,7 +10,9 @@ source: blog
 highlighter: rouge
 markdown: kramdown
 
-plugins: [jekyll-paginate]
+plugins:
+  - jekyll-paginate
+  - jekyll-twitter-plugin
 paginate: 5
 
 permalink: pretty
