@@ -34,7 +34,7 @@ I wanted to solve some of the issues with hashflags around both discovery and du
 
 [![Screenshot of hashflags-function GitHub page]({{ site.baseurl }}img/hashflags-function-github.png)](https://github.com/JamieMagee/hashflags-function)
 
-1.  `ActiveHashflags` fetches the active hashflags from Twitter, and stores them in a JSON object in an Azure Storage Blob. You can find the list of current hashflags here.
+1.  `ActiveHashflags` fetches the active hashflags from Twitter, and stores them in a JSON object in an Azure Storage Blob. You can find the list of current hashflags [here](https://hashflags.blob.core.windows.net/json/activeHashflags).
 2.  `UpdateHashflagState` reads the JSON, and updates the hashflag table with the current state of each hashflag.
 3.  `StoreHashflagImage` downloads the hashflag image, and stores it in a blob store.
 4.  `CreateHeroImage` creates a hero image of the hashtag and hashflag.
