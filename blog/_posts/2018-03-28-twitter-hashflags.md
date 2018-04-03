@@ -3,7 +3,7 @@ title: Twitter Hashflags (_Hash-what?_)
 ---
 
 Have you ever tweeted out a hastag, and discovered a small image attached to the side of it? It could be for [#StPatricksDay](https://twitter.com/HashflagArchive/status/972005822388514818), [#MarchForOurLives](https://twitter.com/HashflagArchive/status/972170656912723969), or whatever [#白白白白白白白白白白](https://twitter.com/HashflagArchive/status/960529700442566656) is meant to be. These are hashflags.
-npm start
+
 A hashflag, sometimes called Twitter emoji, is a small image that appears after a #hashtag for special events. They are not regular emoji, and you can only use them on the Twitter website, or the official Twitter apps. For example:
 
 {% twitter https://twitter.com/TwitterSG/status/965399443733278720 %}
@@ -14,7 +14,7 @@ If you're a company, and [you have enough money](http://www.adweek.com/digital/t
 
 If you spend the money to buy a hashflag, it's important that you launch it correctly—otherwise they can flop. [#白白白白白白白白白白](https://twitter.com/HashflagArchive/status/960529700442566656) is an example of what not to do. At time of writing, it has only 10 uses.
 
-Hashflags aren't exclusive to English, and they can help add context to a tweet in another language. I don't speak any Russian, but I do know that this image is of BB-8
+Hashflags aren't exclusive to English, and they can help add context to a tweet in another language. I don't speak any Russian, but I do know that this image is of BB-8!
 
 {% twitter https://twitter.com/HashflagArchive/status/956184319206273024 %}
 
@@ -28,9 +28,9 @@ $ curl https://twitter.com -v --silent 2>&1 | grep -o -P '.{6}activeHashflags.{6
 &quot;activeHashflags&quot;
 ```
 
-I wrote [some C#](https://github.com/JamieMagee/hashflags-function/blob/master/hashflags/ActiveHashflags.cs) to parse and extract the `activeHashflags` JSON object, and store it in an Azure blob. You can find it [here](https://hashflags.blob.core.windows.net/json/activeHashflags). Using Azure Functions I can run this code on a timer, so the Azure blob is always up to date with the latest Twitter hashflags. This means the blob can be used as an unofficial Twitter hashflags API—but I didn't want to stop there
+I wrote [some C#](https://github.com/JamieMagee/hashflags-function/blob/master/hashflags/ActiveHashflags.cs) to parse and extract the `activeHashflags` JSON object, and store it in an Azure blob. You can find it [here](https://hashflags.blob.core.windows.net/json/activeHashflags). Using Azure Functions I can run this code on a timer, so the Azure blob is always up to date with the latest Twitter hashflags. This means the blob can be used as an unofficial Twitter hashflags API—but I didn't want to stop there.
 
-I wanted to solve some of the issues with hasflags around discovery, and transientness. Azure Functions is the perfect platform for these small, single purpose pieces of code. I ended up writing 5 Azure Functions in total—all of which can be found [on GitHub](https://github.com/JamieMagee/hashflags-function)
+I wanted to solve some of the issues with hashflags around both discovery and durability. Azure Functions is the perfect platform for these small, single purpose pieces of code. I ended up writing five Azure Functions in total—all of which can be found [on GitHub](https://github.com/JamieMagee/hashflags-function).
 
 [![Screenshot of hashflags-function GitHub page]({{ site.baseurl }}img/hashflags-function-github.png)](https://github.com/JamieMagee/hashflags-function)
 
@@ -40,11 +40,11 @@ I wanted to solve some of the issues with hasflags around discovery, and transie
 4.  `CreateHeroImage` creates a hero image of the hashtag and hashflag.
 5.  `TweetHashflag` tweets the hashtag and hero image.
 
-Say hello to [@HashflagArchive](https://twitter.com/HashflagArchive).
+Say hello to [@HashflagArchive](https://twitter.com/HashflagArchive)!
 
 [![Screenshot of HashflagArchive Twitter stream]({{ site.baseurl }}img/hashflag-archive.png)](https://twitter.com/HashflagArchive)
 
-@HashflagArchive solves both the issues I have with hashflags: it tweets out new hashflags the same hour they are activated on twitter—which solves the issue of discovery; and it tweets an image of the hashtag and hashflag—which solves the issue of hashflags being temporal.
+@HashflagArchive solves both the issues I have with hashflags: it tweets out new hashflags the same hour they are activated on twitter, which solves the issue of discovery; and it tweets an image of the hashtag and hashflag, which solves the issue of hashflags being temporary.
 
 So this is great, but there's still one issue—how to use hashflags outside of Twitter.com and the official Twitter apps. This is where the JSON blob comes in. I can build a wrapper library around that, and then using that library, build applications with Twitter hashflags. So that's exactly what I did.
 
@@ -62,7 +62,7 @@ Hashflags.FETCH().then((val: Map<string, string>) => {
 });
 ```
 
-I wrote it in TypeScript, but it can also be used from plain ol' JS as well.
+I wrote it in TypeScript, but it can also be used from plain old JS as well.
 
 ```js
 const Hashflags = require('hashflags').Hashflags;
