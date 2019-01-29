@@ -1,6 +1,6 @@
 [build]
-  command = "npm run build:dist"
+  command = "yarn build:dist"
   publish = "_site/"
 
 [context.deploy-preview]
-  command = "npm run build"
+  command = "yarn build"

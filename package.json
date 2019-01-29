@@ -6,31 +6,23 @@
   "scripts": {
     "a11y": "a11y '_site/**/*.html'",
     "clean": "rm -rf _site && rm -rf .tmp",
-    "concat:css":
-      "mkdir -p .tmp/css && cat blog/_assets/css/* >> .tmp/css/blog.css",
+    "concat:css": "mkdir -p .tmp/css && cat blog/_assets/css/* >> .tmp/css/blog.css",
     "crass": "crass .tmp/css/blog.css --optimize --O1 > _site/css/blog.css",
-    "critical":
-      "critical _site/index.html --base _site --minify --css _site/css/blog.css --inline > .tmp/index.html",
+    "critical": "critical _site/index.html --base _site --minify --css _site/css/blog.css --inline > .tmp/index.html",
     "imagemin": "imagemin blog/_assets/img/{**/*,*} --out-dir=_site/img",
-    "build:css": "npm run concat:css && mkdir -p _site/css && npm run crass",
-    "build:html": "npm run critical && cp .tmp/index.html _site/index.html",
-    "build:images": "npm run imagemin",
+    "build:css": "yarn concat:css && mkdir -p _site/css && yarn crass",
+    "build:html": "yarn critical && cp .tmp/index.html _site/index.html",
+    "build:images": "yarn imagemin",
     "build:jekyll:dev": "jekyll build --config _config.yml,_config-dev.yml",
     "build:jekyll": "jekyll build --config _config.yml",
-    "build:js":
-      "mkdir -p _site/js && cp blog/_assets/js/ga.js _site/js/scripts.js",
-    "build":
-      "npm run clean && npm run build:jekyll:dev && npm run build:css && npm run build:js && npm run build:images",
-    "build:dist":
-      "npm run clean && npm run build:jekyll && npm run build:css && npm run build:js && npm run build:images",
+    "build:js": "mkdir -p _site/js && cp blog/_assets/js/ga.js _site/js/scripts.js",
+    "build": "yarn clean && yarn build:jekyll:dev && yarn build:css && yarn build:js && yarn build:images",
+    "build:dist": "yarn clean && yarn build:jekyll && yarn build:css && yarn build:js && yarn build:images",
     "pagespeed": "psi jamiemagee.co.uk --strategy=mobile",
     "serve": "browser-sync start --https --server _site",
-    "start":
-      "npm run build -s && parallelshell \"npm run serve -s\" \"npm run watch:jekyll -s\"",
-    "watch:jekyll":
-      "chokidar 'blog/index.html' 'blog/_includes/*.html' 'blog/_layouts/*.html' 'blog/_posts/*' 'blog/*.md' -c 'npm run build && browser-sync reload'",
-    "watch:css":
-      "chokidar 'blog/_assets/css/*' -c 'npm run build:css && browser-sync reload'"
+    "start": "yarn build -s && parallelshell \"yarn serve -s\" \"yarn watch:jekyll -s\"",
+    "watch:jekyll": "chokidar 'blog/index.html' 'blog/_includes/*.html' 'blog/_layouts/*.html' 'blog/_posts/*' 'blog/*.md' -c 'yarn build && browser-sync reload'",
+    "watch:css": "chokidar 'blog/_assets/css/*' -c 'yarn build:css && browser-sync reload'"
   },
   "devDependencies": {
     "a11y": "0.5.1",
