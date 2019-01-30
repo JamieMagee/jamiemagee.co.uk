@@ -6,6 +6,7 @@ description: 'Programmer, Engineer, All Round Nice Person'
 github:
   repo: 'https://github.com/JamieMagee/jamiemagee.co.uk'
 source: blog
+include: _headers
 
 highlighter: rouge
 markdown: kramdown
@@ -21,8 +22,7 @@ title: Jamie Magee
 url: 'https://jamiemagee.co.uk'
 
 defaults:
-  -
-    scope:
+  - scope:
       path: "_posts"
     values:
       comments: true
