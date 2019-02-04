@@ -1,10 +1,10 @@
 ---
-title: 'Access: Hack The Box Writeup'
+title: 'Access: Hack The Box writeup'
 ---
 
 [![Access info page]({{ site.baseurl }}img/access-info.png)](https://www.hackthebox.eu/home/machines/profile/156)
 
-Recently I discovered [Hack The Box](https://www.hackthebox.eu/home), an online platform to hone your cyber security skills by practising on vulnerable VMs. The first box I solved is called [Access](https://www.hackthebox.eu/home/machines/profile/156). In this blog post I'll walk through how I solved it. If you don't want any spoilers, please stop reading now
+Recently I discovered [Hack The Box](https://www.hackthebox.eu/home), an online platform to hone your cyber security skills by practising on vulnerable VMs. The first box I solved is called [Access](https://www.hackthebox.eu/home/machines/profile/156). In this blog post I'll walk through how I solved it. If you don't want any spoilers, look away now!
 
 ## Information gathering
 
@@ -81,7 +81,7 @@ Downloaded: 5 files, 5.4M in 1.4s (3.99 MB/s)
 
 ## Microsoft Access
 
-We've got a `.mdb` file—which is a Microsoft Access database file—and a zip file. If we take a quick look at the zip file it's password protected, we'll have to come back the that later.
+We've got a `.mdb` file—which is a Microsoft Access database file—and a zip file. If we take a quick look at the zip file it's password protected. We'll have to come back the that later.
 
 We can examine `backup.mdb` using MDB tools. Maybe there's something we can use there.
 
@@ -256,7 +256,7 @@ C:\Users\security\Desktop>more user.txt
 <SNIP>
 ```
 
-## Privilege Escalation
+## Privilege escalation
 
 Now that we've got the first flag, we need to escalate to `root` access—or more specifically `Administrator` on Windows.
 
