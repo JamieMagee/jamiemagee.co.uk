@@ -1,9 +1,6 @@
 [build]
-  command = "yarn build:dist"
-  publish = "_site/"
+  command = "hugo"
+  publish = "public/"
 
 [build.environment]
-  YARN_VERSION = "1.13.0"
-
-[context.deploy-preview]
-  command = "yarn build"
+  HUGO_VERSION = "0.53"
