@@ -27,7 +27,7 @@
   "devDependencies": {
     "a11y": "0.5.1",
     "browser-sync": "2.26.3",
-    "chokidar-cli": "1.2.1",
+    "chokidar-cli": "1.2.2",
     "chokidar": "2.0.4",
     "crass": "0.12.3",
     "critical": "1.3.4",
