@@ -1,0 +1,25 @@
+site_url: https://jamiemagee.co.uk
+
+backend:
+  name: git-gateway
+  site_domain: jamiemagee.co.uk
+
+media_folder: site/static/img
+public_folder: img
+
+collections:
+  - name: "post"
+    label: "Post"
+    folder: "content/posts"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - {
+          label: "Comments",
+          name: "comments",
+          widget: "boolean",
+          default: true,
+        }
+      - { label: "Body", name: "body", widget: "markdown" }

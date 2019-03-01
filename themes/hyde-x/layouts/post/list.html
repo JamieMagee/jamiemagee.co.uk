@@ -1,0 +1,13 @@
+{{ partial "head.html" . }}
+<div class="content container">
+  {{ range .Data.Pages }}
+  <li><a href="{{ .Permalink }}">{{ .Title }}</a>
+    {{ if isset .Params "categories" }}
+    &middot;
+    {{ range .Params.categories }}<a class="label"
+      href="{{ "/categories/" | absURL }}{{ . | urlize }}">{{ . }}</a>{{ end }}
+    {{ end }}</span>
+    &middot; <time>{{ .Date.Format "Jan 2, 2006" }}</time></li>
+  {{ end }}
+</div>
+{{ partial "foot.html" . }}

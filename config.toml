@@ -1,39 +1,17 @@
 baseURL = "/"
 languageCode = "en-gb"
 title = "Jamie Magee"
-theme = "hello-friend-ng"
+theme = "hyde-x"
 
 copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
+
+DisqusShortname = "jamiemagee"
 
 [author]
   name = "Jamie Magee"
 
 [params]
-  dateform        = "Jan 2, 2006"
-  dateformShort   = "Jan 2"
-  dateformNum     = "2006-01-02"
-  dateformNumTime = "2006-01-02 15:04 -0700"
-
-  homeSubtitle = "Programmer, Engineer, Problem Solver"
-
-  # Directory name of your blog content (default is `content/posts`)
-  contentTypeName = "posts"
-
-  [params.logo]
-    logoText     = "$ cd /home/"
-    logoHomeLink = "/"
-
-  [[params.social]]
-    name = "github"
-    url  = "https://github.com/JamieMagee"
-
-  [[params.social]]
-    name = "linkedin"
-    url  = "https://linkedin.com/in/jamiemagee1"
-  
-  [[params.social]]
-    name = "twitter"
-    url  = "https://twitter.com/Jamie_Maagee"
+  theme = "theme-base-0c"
 
 [menu]
   [[menu.main]]
@@ -42,5 +20,5 @@ copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_
     url        = "/about"
   [[menu.main]]
     identifier = "blog"
-    name       = "Blog"
-    url        = "/posts"
+    name       = "Archive"
+    url        = "/post"
