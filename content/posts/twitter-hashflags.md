@@ -36,7 +36,7 @@ I wrote [some C#](https://github.com/JamieMagee/hashflags-function/blob/master/h
 
 I wanted to solve some of the issues with hashflags around both discovery and durability. Azure Functions is the perfect platform for these small, single purpose pieces of code. I ended up writing five Azure Functions in total—all of which can be found [on GitHub](https://github.com/JamieMagee/hashflags-function).
 
-[![Screenshot of hashflags-function GitHub page](img/hashflags-function-github.png)](https://github.com/JamieMagee/hashflags-function)
+[![Screenshot of hashflags-function GitHub page](/img/hashflags-function-github.png)](https://github.com/JamieMagee/hashflags-function)
 
 1. `ActiveHashflags` fetches the active hashflags from Twitter, and stores them in a JSON object in an Azure Storage Blob. You can find the list of current hashflags [here](https://hashflags.blob.core.windows.net/json/activeHashflags).
 2. `UpdateHashflagState` reads the JSON, and updates the hashflag table with the current state of each hashflag.

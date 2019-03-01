@@ -28,7 +28,7 @@ First of all you need to create an Azure Web App.
 - Click New > Compute > Web App > Quick Create
 - Enter the URL you want and select an app service plan
 
-<img src="/img/azure-new-web-app.png" alt="Azure new web app">
+![Azure new web app](/img/azure-new-web-app.png)
 
 On the dashboard for your new web app, make a note of the FTP host name and your deployment credentials. If you've forgotten your deployment credentials you can reset them from here as well.
 
@@ -122,7 +122,7 @@ To put it all together you need to configure Travis builds for your GitHub repos
   - `PASSWORD` is `azure-deployment-password`
   - `HOST` is `ftp-server-name.ftp.azurewebsites.windows.net`
 
-<img src="/img/travis-environment-variables.png" alt="Travis environment variables">
+![Travis environment variables"](/img/travis-environment-variables.png)
 
 Remember that `USERNAME` requires a double backslash to escape the character in the terminal.
 

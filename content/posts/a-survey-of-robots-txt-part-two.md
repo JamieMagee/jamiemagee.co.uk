@@ -537,7 +537,3 @@ Just because a file or directory is mentioned in `robots.txt`, it doesn't mean t
 `robots.txt` is a fairly innocuous part of the web. It's been interesting to see how popular websites (ab)use it, and which web crawlers are naughty or nice. Most of all this has been a great exercise for myself in collecting data and analysing it using pandas and Jupyter.
 
 The full data set is released under the [Open Database License (ODbL) v1.0](https://opendatacommons.org/licenses/odbl/1.0/) and can be found [on GitHub](https://github.com/JamieMagee/robots-txt)
-
-```
-
-```

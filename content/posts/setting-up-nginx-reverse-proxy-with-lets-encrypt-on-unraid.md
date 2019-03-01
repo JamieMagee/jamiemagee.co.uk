@@ -20,7 +20,7 @@ In order to access everything from outside your LAN you'll need to forward ports
 
 From the Apps page on the unRAID web interface, search for `nginx-proxy` and click 'get more results from Docker Hub'. Click 'add' under the listing for `nginx-proxy` by jwilder. Set the following container settings, changing your 'host path' to wherever you store Docker configuration files on your unRAID host
 
-<img src="/img/nginx-proxy-settings.png" alt="nginx-proxy settings">
+![nginx-proxy settings](/img/nginx-proxy-settings.png)
 
 To add basic auth to any of the sites you'll need to make a file with the `VIRTUAL_HOST` of the site, available to nginx in `/etc/nginx/htpasswd`. For example, I added a file in `/mnt/user/docker/nginx/htpasswd/`. You can create htpasswd files using `apache2-utils`, or there are sites available which can create them.
 
@@ -28,7 +28,7 @@ To add basic auth to any of the sites you'll need to make a file with the `VIRTU
 
 From the Apps page again, search for `letsencrypt-nginx-proxy-companion`, click 'get more results from Docker Hub', and then click 'add' under the listing for `letsencrypt-nginx-proxy-companion` by jrcs. Enter the following container settings, again changing your 'host path' to wherever you store Docker configuration files on your unRAID host
 
-<img src="/img/lets-encrypt-settings.png" alt="lets encrypt settings">
+![lets encrypt settings](/img/lets-encrypt-settings.png)
 
 ## Putting it all together
 
