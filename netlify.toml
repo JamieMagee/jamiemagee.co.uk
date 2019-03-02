@@ -1,9 +1,9 @@
 [build]
-  command = "yarn build:dist"
-  publish = "_site/"
+  command = "hugo"
+  publish = "public"
 
 [build.environment]
-  YARN_VERSION = "1.13.0"
+  HUGO_VERSION = "0.54.0"
 
-[context.deploy-preview]
-  command = "yarn build"
+[context.branch-deploy]
+  command = "hugo --config config.toml,config.dev.toml"

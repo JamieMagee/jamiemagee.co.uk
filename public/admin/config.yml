@@ -1,0 +1,36 @@
+site_url: https://jamiemagee.co.uk
+publish_mode: editorial_workflow
+
+backend:
+  name: git-gateway
+  site_domain: jamiemagee.co.uk
+  branch: hugo
+
+media_folder: static/img
+public_folder: img
+
+collections:
+  - label: "Pages"
+    name: "pages"
+    files:
+      - label: "About Page"
+        name: "about"
+        file: "content/about.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
+  - name: "post"
+    label: "Post"
+    folder: "content/post"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "date" }
+      - {
+          label: "Comments",
+          name: "comments",
+          widget: "boolean",
+          default: true,
+        }
+      - { label: "Body", name: "body", widget: "markdown" }

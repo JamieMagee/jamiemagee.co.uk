@@ -1,0 +1,37 @@
+baseURL = "/"
+languageCode = "en-gb"
+title = "Jamie Magee"
+theme = "hyde-x"
+disqusShortname = "jamiemagee"
+googleAnalytics = "UA-701081-9"
+paginate = 5
+
+copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>'
+
+[author]
+  name = "Jamie Magee"
+
+[params]
+  theme = "theme-base-0c"
+  tagline = "Programmer, Engineer, Problem Solver"
+  truncate = false
+  home = "Home"
+  gravatarHash = "5a37e2531db08529192d7d323e8cecd8"
+  customCSS = "/css/jamie.css"
+
+  highlight = "github"
+
+  # Sidebar URLS
+  github = "https://github.com/JamieMagee"
+  linkedin = "https://www.linkedin.com/in/jamiemagee1/"
+  twitter = "http://twitter.com/Jamie_Magee"
+
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name       = "About"
+    url        = "/about"
+  [[menu.main]]
+    identifier = "blog"
+    name       = "Archive"
+    url        = "/blog"
