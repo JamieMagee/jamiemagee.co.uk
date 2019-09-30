@@ -3,7 +3,7 @@
   publish = "public"
 
 [build.environment]
-  HUGO_VERSION = "0.54.0"
+  HUGO_VERSION = "0.58.3"
 
 [context.branch-deploy]
   command = "hugo --config config.toml,config.dev.toml"
