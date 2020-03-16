@@ -36,7 +36,7 @@ Following up on the lack of the `void` return type, no async method should be de
 
 ## Virtual methods
 
-In asynchronous programming there is no concept of a `void` return type, as the basis of the model is that each method returns a mechanism for signaling completion of the asynchronous work. When converting base classes which have empty implementations or return constant values, the framework provides methods and helpers to facilitate the pattern.
+In asynchronous programming there is no concept of a `void` return type, as the basis of the model is that each method returns a mechanism for signalling completion of the asynchronous work. When converting base classes which have empty implementations or return constant values, the framework provides methods and helpers to facilitate the pattern.
 
 {{< gist JamieMagee 40c8eb76e430c4803ffd225a22ccb0ad "VirtualMethods.cs" >}}
 
