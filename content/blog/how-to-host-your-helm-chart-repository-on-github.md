@@ -51,7 +51,7 @@ Where `ct.yaml` is:
 
 For a full list of configuration options check out this [sample file](https://github.com/helm/chart-testing/blob/master/pkg/config/test_config.yaml).
 
-The `lint` action for Chart Testing is a bit of a catch-all that helps us prevent a lot of potential bugs or mistakes in your charts. That includes:
+The `lint` action for Chart Testing is a bit of a catch-all that helps you prevent a lot of potential bugs or mistakes in your charts. That includes:
 
 - Version checking
 - YAML schema validation on `Chart.yaml`
@@ -60,7 +60,7 @@ The `lint` action for Chart Testing is a bit of a catch-all that helps us preven
 
 ### Helm-docs
 
-Helm-docs isn't strictly a linting tool, but it makes sure that your documentation stays up-to-date with the current state of your chart. It requires that you create a `README.md.gotmpl` in each chart repository using the [available templates](https://github.com/norwoodj/helm-docs#available-templates), otherwise it will create a `README.md` for us using a default template.
+Helm-docs isn't strictly a linting tool, but it makes sure that your documentation stays up-to-date with the current state of your chart. It requires that you create a `README.md.gotmpl` in each chart repository using the [available templates](https://github.com/norwoodj/helm-docs#available-templates), otherwise it will create a `README.md` for you using a default template.
 
 To use it as part of your pull request build, you need to add the following job:
 
