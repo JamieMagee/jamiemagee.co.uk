@@ -1,8 +1,7 @@
 ---
 title: Common async pitfalls—part two
-date: '2020-11-18'
+date: '2020-11-28'
 comments: true
-draft: true
 ---
 
 Following on from [part one]({{< ref "/blog/common-async-pitfalls-part-one" >}}), here's some more of the most common pitfalls I've come across—either myself, colleagues and friends, or examples in documentation—and how to avoid them.
