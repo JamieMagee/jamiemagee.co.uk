@@ -4,6 +4,7 @@ publish_mode: editorial_workflow
 backend:
   name: git-gateway
   site_domain: jamiemagee.co.uk
+  branch: main
 
 media_folder: static/img
 public_folder: img
