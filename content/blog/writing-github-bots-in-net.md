@@ -21,7 +21,7 @@ Next up I’m going to install the [Octokit.Webhooks.AspNetCore](https://www.nug
 
 {{< gist JamieMagee fb5ffc670bd4f7cdb3378eca33cfc12f "add-package-1.sh" >}}
 
-This package consumes the Octokit.Webhooks package, which contains core functionality like deserializers and processors, and adds [ASP.NET](http://ASP.NET) Core specific code, like automatic API endpoint mapping and shared secret verification.
+This package consumes the Octokit.Webhooks package, which contains core functionality like deserializers and processors, and adds ASP.NET Core specific code, like automatic API endpoint mapping and shared secret verification.
 
 ## Handling webhooks
 
@@ -36,7 +36,7 @@ I also need to hook up `MyWebhookEventProcessor` in my startup class.
 
 {{< gist JamieMagee fb5ffc670bd4f7cdb3378eca33cfc12f "Program.2.cs" >}}
 
-This is enough to tell [ASP.NET](http://ASP.NET) to hook up dependency injection for `MyWebhookEventProcessor`, enable routing. It will also automatically add a route to handle incoming GitHub webhooks. By default it’s exposed at `/api/github/webhooks`, but you can use any route you’d like. `MapGitHubWebhooks` also accepts a shared secret which allows you to verify the content signature of GitHub webhooks.
+This is enough to tell ASP.NET to hook up dependency injection for `MyWebhookEventProcessor`, enable routing. It will also automatically add a route to handle incoming GitHub webhooks. By default it’s exposed at `/api/github/webhooks`, but you can use any route you’d like. `MapGitHubWebhooks` also accepts a shared secret which allows you to verify the content signature of GitHub webhooks.
 
 That’s all the code required on my side. Now I just need to expose my service to the internet, and configure GitHub to start sending me webhooks.
 
@@ -54,11 +54,11 @@ And using [localhost.run](http://localhost.run) I can create a tunnel for that p
 
 Now on GitHub if I visit the settings for a repository, and go to webhooks, I can create a new webhook configuration using that domain name.
 
-![Creating a new GitHub Webhook](img/github-new-webhook.png)
+![Creating a new GitHub Webhook](/img/github-new-webhook.png)
 
 Now all I need to do is create a comment on an issue in the same repository....
 
-![A test issue comment](img/new-github-comment.png)
+![A test issue comment](/img/new-github-comment.png)
 
 And it’ll get logged in my terminal!
 
@@ -82,7 +82,7 @@ I need to do that cast from `long` to `int` because `Octokit` still has [an open
 
 Once I’ve done all that, I can create an issue comment on my repository on GitHub and my “bot” will reply!
 
-![A reply from the bot](img/github-bot-reply.png)
+![A reply from the bot](/img/github-bot-reply.png)
 
 ## What next?
 
