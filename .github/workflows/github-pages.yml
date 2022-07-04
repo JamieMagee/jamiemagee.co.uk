@@ -12,16 +12,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.0.2
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2.5.0
+        uses: peaceiris/actions-hugo@c03b5dbed22245418539b65eb9a3b1d5fdd9a0a6 # tag=v2.5.0
 
       - name: Build
         run: hugo --minify
 
       - name: Archive artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
         with:
           name: public
           path: public
@@ -30,13 +30,13 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
         with:
           name: public
           path: public
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3.8.0
+        uses: peaceiris/actions-gh-pages@068dc23d9710f1ba62e86896f84735d869951305 # tag=v3.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: public
