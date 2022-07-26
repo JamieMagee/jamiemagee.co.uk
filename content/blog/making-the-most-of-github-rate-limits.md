@@ -71,4 +71,4 @@ There is a trade-off, though. If you use conditional requests and have a cache m
 
 ## Summing up
 
-Using these methods I’ve managed to eek out every bit of performance out of the GitHub API for my integrations. Let me know what methods you use, or if there’s anything I’ve missed.
+Using these methods I’ve managed to eek out every bit of performance of the GitHub API for my integrations. Let me know what methods you use, or if there’s anything I’ve missed.
