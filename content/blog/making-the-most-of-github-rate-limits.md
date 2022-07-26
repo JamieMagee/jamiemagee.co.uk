@@ -27,7 +27,7 @@ And if I make the same request a little bit later…
 
 {{< gist JamieMagee 840fe6382681acbf60b4ed4e4baa8c6c "if-modified.2.sh" >}}
 
-The ETag is different but the Last-Modified time is still the same as before. Based on [this StackOverflow question](https://stackoverflow.com/questions/28060116/which-is-more-reliable-for-github-api-conditional-requests-etag-or-last-modifie/57309763#57309763), it appears as if this has been an issue for a while. So if a response has both an ETag and a Last-Modified time, I’d recommend using the Last-Modified time to make conditional requests.
+The ETag is different but the Last-Modified time is still the same as before. Based on [this StackOverflow question](https://stackoverflow.com/questions/28060116/which-is-more-reliable-for-github-api-conditional-requests-etag-or-last-modifie/57309763#57309763), it appears as if this has been an issue for a while. So if a response has both an `ETag` and a `Last-Modified` time, I’d recommend using the `Last-Modified` time to make conditional requests.
 
 ## Both REST and GraphQL
 
