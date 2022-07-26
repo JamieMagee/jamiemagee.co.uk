@@ -31,7 +31,7 @@ The ETag is different but the Last-Modified time is still the same as before. Ba
 
 ## Both REST and GraphQL
 
-Saying “rate limit” isn’t really accurate. What I actually mean is “rate limits”. GitHub actually has nine different rate limits. Some are for very specific use cases, like `[integration_manifest`](https://docs.github.com/en/developers/apps/building-github-apps/creating-a-github-app-from-a-manifest#3-you-exchange-the-temporary-code-to-retrieve-the-app-configuration) for the GitHub App Manifest code conversion endpoint. But the two that are most useful are `core` (AKA REST) and `graphql`.
+Saying “rate limit” isn’t really accurate. What I actually mean is “rate limits”. GitHub actually has nine different rate limits. Some are for very specific use cases, like [`integration_manifest`](https://docs.github.com/en/developers/apps/building-github-apps/creating-a-github-app-from-a-manifest#3-you-exchange-the-temporary-code-to-retrieve-the-app-configuration) for the GitHub App Manifest code conversion endpoint. But the two that are most useful are `core` (AKA REST) and `graphql`.
 
 If I make a request to the [rate limit endpoint](https://docs.github.com/en/rest/rate-limit), you can see all the different rate limits.
 
