@@ -19,7 +19,7 @@ Unfortunately, conditional requests are only available for the REST API. HTTP ca
 
 ## Prefer `If-Modified-Since`
 
-The GitHub REST API documentation covers conditional requests pretty well. The reason I'm mentioning it? Well, the documentation says that you can use `ETag` or `If-Modified-Since` interchangeably – but they're not equivalent. Take a look at this example:
+The GitHub REST API documentation covers conditional requests pretty well. The reason I'm mentioning it? Well, the documentation says that you can use `ETag` or `If-Modified-Since` interchangeably—but they're not equivalent. Take a look at this example:
 
 {{< gist JamieMagee 840fe6382681acbf60b4ed4e4baa8c6c "if-modified.1.sh" >}}
 
@@ -49,7 +49,7 @@ The default size for most endpoints is 30 results, but the maximum size is often
 
 ## Use sorting
 
-Most API calls allow you to sort them based on a date field when querying an endpoint. If you use this **–** and do some caching on your end as well **–** you can avoid having to fetch all pages for a request whenever you have a cache request.
+Most API calls allow you to sort them based on a date field when querying an endpoint. If you use this—and do some caching on your end as well—you can avoid having to fetch all pages for a request whenever you have a cache request.
 
 For example, if you need to fetch the most recently changed pull requests for a repository, you should be sorting by `updated` and storing a local cache of pull requests. That way a conditional request cache miss won’t require you to fetch all the pages of a request. You can compare each page to your local cache, and only fetch the next page if required.
 
