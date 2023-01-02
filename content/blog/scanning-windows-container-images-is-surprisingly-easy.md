@@ -67,7 +67,7 @@ drwxr-xr-x 20 jamie users 4.0K Dec  9 01:19 Windows
 
 Inside the extracted layer there are two directories: `Files` and `UtilityVM`. `Files` had the filesystem of the Windows container image, while `UtilityVM` is used by Hyper-V behind the scenes. So I just needed to focus on `Files`.
 
-How did I figure out the specific version of Windows the container is running? From the registry of course! The “SOFTWARE” registry hive contained information about installed software, including Windows itself, and was found at `Files/Windows/System32/config/SOFTWARE`.
+How did I figure out the specific version of Windows the container is running? From the registry of course! The `SOFTWARE` registry hive contained information about installed software, including Windows itself, and was found at `Files/Windows/System32/config/SOFTWARE`.
 
 Thankfully, there’s a great NuGet package called Registry that let me easily load and parse the registry, but there are also packages for Go, Rust, and even Node.js.
 
