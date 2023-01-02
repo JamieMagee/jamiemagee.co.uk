@@ -1,12 +1,11 @@
 name: github pages
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
+      - renovate/*
+  pull_request:
 
 jobs:
   build:
@@ -27,7 +26,7 @@ jobs:
           path: public
   deploy:
     needs: build
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
