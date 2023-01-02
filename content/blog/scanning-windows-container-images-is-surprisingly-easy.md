@@ -69,7 +69,7 @@ Inside the extracted layer there are two directories: `Files` and `UtilityVM`. `
 
 How did I figure out the specific version of Windows the container is running? From the registry of course! The `SOFTWARE` registry hive contained information about installed software, including Windows itself, and was found at `Files/Windows/System32/config/SOFTWARE`.
 
-Thankfully, there’s a great NuGet package called Registry that let me easily load and parse the registry, but there are also packages for Go, Rust, and even Node.js.
+Thankfully, there’s a great NuGet package called [Registry](https://github.com/EricZimmerman/Registry) that let me easily load and parse the registry, but there are also packages for [Go](https://pkg.go.dev/golang.org/x/sys/windows/registry), [Rust](https://github.com/bbqsrc/registry-rs), and even [Node.js](https://github.com/ironSource/node-regedit).
 
 {{< gist JamieMagee a12ce294862eb96135c123381a6aa438 "windows-1.cs" >}}
 
