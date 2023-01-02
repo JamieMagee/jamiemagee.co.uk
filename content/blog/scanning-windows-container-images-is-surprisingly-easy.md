@@ -14,7 +14,7 @@ The first question I needed to answer was: what version of Windows was the conta
 
 Container images are really just `tar` files, and Windows container images are no different. So first I saved a Windows container image locally using skopeo:
 
-```
+```shell
 $ skopeo --insecure-policy --override-os windows copy docker://mcr.microsoft.com/windows/nanoserver:ltsc2022 dir:///tmp/nanoserver
 $ ls /tmp/nanoserver
 0db1879370e5c72dae7bff5d013772cbbfb95f30bfe1660dcef99e0176752f1c  7d843aa7407d9a5b1678482851d2e81f78b08185b72c18ffb6dfabcfed383858 manifest.json version
@@ -22,7 +22,7 @@ $ ls /tmp/nanoserver
 
 Next, I inspected the manifest using jq to find the layer that had the Windows files.
 
-```
+```shell
 $ jq . manifest.json
 {
   "schemaVersion": 2,
@@ -44,7 +44,7 @@ $ jq . manifest.json
 
 I then extracted the layer and fixed the permissions.
 
-```
+```shell
 $ mkdir layer
 $ tar -xf 7d843aa7407d9a5b1678482851d2e81f78b08185b72c18ffb6dfabcfed383858 -C ./layer/
 $ sudo find ./layer -type f -exec chmod 0644 {} \;
