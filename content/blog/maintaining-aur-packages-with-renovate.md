@@ -4,9 +4,9 @@ date: '2023-03-16'
 comments: true
 ---
 
-One of the huge advantages that Arch Linux has over other distributions, apart from being able to say “BTW I use arch”, is the Arch User Repository (AUR). It’s a community-driven repository with over 80,000 packages. If you’re looking for a package, chances are it’s in the AUR.
+One big advantage that Arch Linux has over other distributions, apart from being able to say “BTW I use arch”, is the Arch User Repository (AUR). It’s a community-driven repository with over 80,000 packages. If you’re looking for a package, chances are you'll find it in the AUR.
 
-Keeping all those packages up to date, takes a lot of manual effort by a lot of volunteers. People have created and used tools, like [`urlwatch`](https://github.com/thp/urlwatch) and [`aurpublish`](https://github.com/eli-schwartz/aurpublish), to let them know when upstream releases are cut and automate some parts of the process. I know I do. But I wanted to automate the entire process more. This is where I think [Renovate](https://github.com/renovatebot/renovate/) can help.
+Keeping all those packages up to date, takes a lot of manual effort by a lot of volunteers. People have created and used tools, like [`urlwatch`](https://github.com/thp/urlwatch) and [`aurpublish`](https://github.com/eli-schwartz/aurpublish), to let them know when upstream releases are cut and automate some parts of the process. I know I do. But I wanted to automate the entire process. I think [Renovate](https://github.com/renovatebot/renovate/) can help here.
 
 ## Updating versions with Renovate
 
@@ -17,22 +17,24 @@ Renovate has a couple of concepts that I need to explain first: [datasources](ht
 I can create a `renovate.json` configuration with the following regex manager configuration:
 
 ```json
-"regexManagers": [
-  {
-    "fileMatch": ["(^|/)PKGBUILD$"],
-    "matchStrings": [
-      "pkgver=(?<currentValue>.*) # renovate: datasource=(?<datasource>.*) depName=(?<depName>.*)"
-    ],
-    "extractVersionTemplate": "^v?(?<version>.*)$"
-  }
-]
+{
+  "regexManagers": [
+    {
+      "fileMatch": ["(^|/)PKGBUILD$"],
+      "matchStrings": [
+        "pkgver=(?<currentValue>.*) # renovate: datasource=(?<datasource>.*) depName=(?<depName>.*)"
+      ],
+      "extractVersionTemplate": "^v?(?<version>.*)$"
+    }
+  ]
+}
 ```
 
 Breaking that down:
 
 - The `fileMatch` setting tells Renovate to look for any `PKGBUILD` files in a repository
 - The `matchStrings` is the regex format to extract the version, datasource, and dependency name from the `PKGBUILD`
-- The `extractVersionTemplate` is to handle a “v” in front of any version number that is sometimes added to git tags
+- The `extractVersionTemplate` is to handle a “v” in front of any version number that is sometimes added to Git tags
 
 And here’s an extract from the PKGBUILD for the [bicep-bin](https://aur.archlinux.org/packages/bicep-bin) AUR package that I maintain:
 
@@ -42,11 +44,11 @@ pkgver=0.15.31 # renovate: datasource=github-tags depName=Azure/bicep
 
 Here I’m configuring Renovate to use the [`github-tags`](https://docs.renovatebot.com/modules/datasource/github-tags/) datasource and to look in the [Azure/bicep GitHub repository](https://github.com/Azure/bicep) for new versions. That means it’ll look in the [list of tags in that repository](https://github.com/Azure/bicep/tags) for any new versions. If Renovate finds any new versions, it’ll automatically update the `PKGBUILD` and open a pull request with the updated version.
 
-So I’ve automated the `PKGBUILD` update, but that’s only half of the work. The checksums and `.SRCINFO` need to be updated before pushing to the AUR. Unfortunately, Renovate can’t do that ([yet](https://github.com/renovatebot/renovate/tree/feat/arch-linux-manager)), but GitHub Actions can!
+So I’ve automated the `PKGBUILD` update, but that’s only half of the work. The checksums and `.SRCINFO` must be updated before pushing to the AUR. Unfortunately, Renovate can’t do that ([yet](https://github.com/renovatebot/renovate/tree/feat/arch-linux-manager)), but GitHub Actions can!
 
 ## Updating checksums and `.SRCINFO` with GitHub Actions
 
-Updating the checksums with `updpkgsums` easy, and generating an updated `.SRCINFO` with `makepkg --printsrcinfo > .SRCINFO` is straightforward too. But doing that for a whole repository of AUR packages is going to be a little trickier. So let me build up the GitHub actions workflow step-by-step.
+Updating the checksums with `updpkgsums` is easy, and generating an updated `.SRCINFO` with `makepkg --printsrcinfo > .SRCINFO` is straightforward too. But doing that for a whole repository of AUR packages is going to be a little trickier. So let me build up the GitHub actions workflow step-by-step.
 
 First, I only want to run this workflow on pull requests targeting the `main` branch.
 
@@ -60,7 +62,7 @@ on:
       - main
 ```
 
-Next, I’m going to need to check out the entire history of the repository, so I can compare the files changed in the latest commit with the git history.
+Next, I’m going to need to check out the entire history of the repository, so I can compare the files changed in the latest commit with the Git history.
 
 ```yaml
 jobs:
@@ -85,9 +87,9 @@ Getting the package that changed in a pull request requires a little bit of shel
     echo "pkgbuild=$(git diff --name-only origin/main origin/${GITHUB_HEAD_REF} "*PKGBUILD" | head -1 | xargs dirname)" >> $GITHUB_ENV
 ```
 
-But now that I’ve found the package that changed in the Renovate pull request, I can update the files.
+Now I’ve found the package that changed in the Renovate pull request, I can update the files.
 
-This step in the workflow uses a private GitHub Action that I have in my `aur-packages` repository. I’m not going to break it down here, but at its core it runs `updpkgsums`and `makepkg --printsrcinfo > .SRCINFO` with a little extra configuration required to run Arch Linux on GitHub Actions runners. You can [check out the full code on GitHub](https://github.com/JamieMagee/aur-packages/tree/main/.github/actions/aur).
+This step in the workflow uses a private GitHub Action that I have in my `aur-packages` repository. I’m not going to break it down here, but at its core it runs `updpkgsums` and `makepkg --printsrcinfo > .SRCINFO` with a little extra configuration required to run Arch Linux on GitHub Actions runners. You can [check out the full code on GitHub](https://github.com/JamieMagee/aur-packages/tree/main/.github/actions/aur).
 
 ```yaml
 - name: Validate package
@@ -114,7 +116,7 @@ But why stop there? Let’s talk about publishing.
 
 ## Publishing to the AUR
 
-Each AUR package is its own Git repository. So to update a package in the AUR, all I need to do to is to push a new commit with the updated `PKGBUILD` and `.SRCINFO`. Thankfully, [KSXGitHub](https://github.com/KSXGitHub) has created the [github-actions-deploy-aur](https://github.com/KSXGitHub/github-actions-deploy-aur) GitHub Action to streamline the whole process.
+Each AUR package is its own Git repository. So to update a package in the AUR, I only need to push a new commit with the updated `PKGBUILD` and `.SRCINFO`. Thankfully, [KSXGitHub](https://github.com/KSXGitHub) created the [github-actions-deploy-aur](https://github.com/KSXGitHub/github-actions-deploy-aur) GitHub Action to streamline the whole process.
 
 If I create a new GitHub Actions workflow to publish to the AUR, I can reuse the first two steps from my previous workflow to check out the repository and find the updated package. Then all I need to do is to use the [github-actions-deploy-aur](https://github.com/KSXGitHub/github-actions-deploy-aur) GitHub Action:
 
@@ -132,4 +134,4 @@ If I create a new GitHub Actions workflow to publish to the AUR, I can reuse the
 
 ### All together now
 
-If you own any AUR packages and want to automate some of the maintenance burden, check out the [AUR packages template GitHub repository](https://github.com/JamieMagee/aur-packages-template/) I created. It contains all of the steps I showed in this blog post. And if you want to see how it works in practice, check out my [AUR packages GitHub repository](https://github.com/JamieMagee/aur-packages).
+If you own any AUR packages and want to automate some of the maintenance burden, check out my [AUR packages template GitHub repository](https://github.com/JamieMagee/aur-packages-template/). It contains all of the steps I showed in this blog post. And if you want to see how it works in practice, check out my [AUR packages GitHub repository](https://github.com/JamieMagee/aur-packages).
