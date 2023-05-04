@@ -19,8 +19,6 @@ copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_
   gravatarHash = "5a37e2531db08529192d7d323e8cecd8"
   customCSS = "/css/jamie.css"
 
-  highlight = "github"
-
   # Sidebar URLS
   github = "https://github.com/JamieMagee"
   linkedin = "https://www.linkedin.com/in/jamiemagee1/"
@@ -35,6 +33,14 @@ copyright = '<a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_
     identifier = "blog"
     name       = "Archive"
     url        = "/blog"
+
+
+[markup.highlight]
+  guessSyntax = true
+  lineNos = true
+  lineNumbersInTable = false
+  style = "github"
+  tabWidth = 2
 
 [markup.goldmark.renderer]
   unsafe= true
