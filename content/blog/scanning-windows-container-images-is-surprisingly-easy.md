@@ -71,7 +71,16 @@ How did I figure out the specific version of Windows the container is running? F
 
 Thankfully, there’s a great NuGet package called [Registry](https://github.com/EricZimmerman/Registry) that let me easily load and parse the registry, but there are also packages for [Go](https://pkg.go.dev/golang.org/x/sys/windows/registry), [Rust](https://github.com/bbqsrc/registry-rs), and even [Node.js](https://github.com/ironSource/node-regedit).
 
-{{< gist JamieMagee a12ce294862eb96135c123381a6aa438 "windows-1.cs" >}}
+```csharp
+using Registry;
+
+var registryHive = new RegistryHive("/tmp/nanoserver/layer/Files/Windows/System32/config/SOFTWARE");
+registryHive.ParseHive();
+var currentVersion = registryHive.GetKey(@"Microsoft\Windows NT\CurrentVersion");
+var fullVersion =
+    $"{currentVersion.GetValue("CurrentMajorVersionNumber")}.{currentVersion.GetValue("CurrentMinorVersionNumber")}.{currentVersion.GetValue("CurrentBuildNumber")}.{currentVersion.GetValue("UBR")}";
+Console.WriteLine(fullVersion);
+```
 
 Running this code, I got version `10.0.20348.1366` which was [apparently released on 13th December 2022](https://twitter.com/ChangeWindows/status/1602752823116333056).
 
@@ -81,7 +90,33 @@ The version of Windows doesn’t tell the whole story. There are also updates th
 
 By extending my earlier code, I can find out what updates this container image has.
 
-{{< gist JamieMagee a12ce294862eb96135c123381a6aa438 "windows-2.cs" >}}
+```csharp
+var packages = registryHive.GetKey(@"Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages");
+var updatePackageRegex = new Regex(@"^Package_\d+_for_(KB\d+)~\w{16}~\w+~~((?:\d+\.){3}\d+)$");
+
+var updates = new Dictionary<string, string>();
+foreach (var packageKey in packages.SubKeys)
+{
+    if (!updatePackageRegex.IsMatch(packageKey.KeyName))
+    {
+        continue;
+    }
+
+    var currentState = packageKey.Values.Find(v => v.ValueName == "CurrentState")?.ValueData;
+
+    // Installed
+    if (currentState == "112")
+    {
+        var groups = updatePackageRegex.Match(packageKey.KeyName).Groups;
+        updates[groups[1].Value] = groups[2].Value;
+    }
+}
+
+foreach (var update in updates)
+{
+    Console.WriteLine($"{update.Key}: {update.Value}");
+}
+```
 
 Running this gave me a single update: `KB5020373: 20348.1300.1.0`. Searching online for [KB5020373](https://support.microsoft.com/en-gb/topic/november-8-2022-kb5020613-cumulative-update-for-net-framework-3-5-and-4-8-for-windows-10-version-20h2-windows-10-version-21h1-windows-10-version-21h2-and-windows-10-version-22h2-3880a78d-3b33-429a-93fc-eeb0c40b4ad4) led me to the documentation for the update. It’s the November 2022 security update for .NET Framework and has a fix for [CVE-2022-41064](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2022-41064).
 

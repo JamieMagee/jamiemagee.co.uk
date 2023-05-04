@@ -11,7 +11,30 @@ This topic is actually covered very well in [the GitHub documentation](https://d
 
 To show you what I mean, here’s a short example:
 
-{{< gist JamieMagee 840fe6382681acbf60b4ed4e4baa8c6c "conditional-requests.sh" >}}
+```bash
+$ curl -I -H "Authorization: token ..." "https://api.github.com/user
+< HTTP/2 200
+< etag: "0c05f6422602a76a6671b28fc70af0ff9775ee41c80aca7d527814bb79a0fc2c"
+< last-modified: Mon, 21 Feb 2022 17:25:59 GMT
+< x-ratelimit-limit: 5000
+< x-ratelimit-remaining: 4993
+< x-ratelimit-reset: 1645482669
+
+$ curl -I -H "If-None-Match: \"0c05f6422602a76a6671b28fc70af0ff9775ee41c80aca7d527814bb79a0fc2c\"" -H "Authorization: token ..." "https://api.github.com/user"
+< HTTP/2 304
+< etag: "0c05f6422602a76a6671b28fc70af0ff9775ee41c80aca7d527814bb79a0fc2c"
+< last-modified: Mon, 21 Feb 2022 17:25:59 GMT
+< x-ratelimit-limit: 5000
+< x-ratelimit-remaining: 4993
+< x-ratelimit-reset: 1645482669
+
+$ curl -I -H "If-Modified-Since: Mon, 21 Feb 2022 17:25:59 GMT" -H "Authorization: token ..." "https://api.github.com/user"
+< HTTP/2 304
+< last-modified: Mon, 21 Feb 2022 17:25:59 GMT
+< x-ratelimit-limit: 5000
+< x-ratelimit-remaining: 4993
+< x-ratelimit-reset: 1645482669
+```
 
 The first request uses one request of my rate limit, taking it from 4994 to 4993. But the next two requests use `If-None-Match` and `If-Modified-Since` headers, so my rate limit is still 4993.
 
@@ -21,11 +44,21 @@ Unfortunately, conditional requests are only available for the REST API. HTTP ca
 
 The GitHub REST API documentation covers conditional requests pretty well. The reason I'm mentioning it? Well, the documentation says that you can use `ETag` or `If-Modified-Since` interchangeably—but they're not equivalent. Take a look at this example:
 
-{{< gist JamieMagee 840fe6382681acbf60b4ed4e4baa8c6c "if-modified.1.sh" >}}
+```bash
+$ curl -I -H "Authorization:token ..." "https://api.github.com/repos/renovatebot/renovate/releases/latest"
+< HTTP/2 200
+< etag: "70eb55000ec3e69bc2d88079714612000a955d4afaf02643b6602d99fb60dd8d"
+< last-modified: Mon, 21 Feb 2022 21:47:30 GMT
+```
 
 And if I make the same request a little bit later…
 
-{{< gist JamieMagee 840fe6382681acbf60b4ed4e4baa8c6c "if-modified.2.sh" >}}
+```bash
+$ curl -I -H "Authorization:token ..." "https://api.github.com/repos/renovatebot/renovate/releases/latest"
+< HTTP/2 200
+< etag: "85f04330d7bca80e6e0d62ac1b41b6d57e2ff11744565655e46732d44736dba6"
+< last-modified: Mon, 21 Feb 2022 21:47:30 GMT
+```
 
 The ETag is different but the Last-Modified time is still the same as before. Based on [this StackOverflow question](https://stackoverflow.com/questions/28060116/which-is-more-reliable-for-github-api-conditional-requests-etag-or-last-modifie/57309763#57309763), it appears as if this has been an issue for a while. So if a response has both an `ETag` and a `Last-Modified` time, I’d recommend using the `Last-Modified` time to make conditional requests.
 
@@ -35,7 +68,72 @@ Saying “rate limit” isn’t really accurate. What I actually mean is “rate
 
 If I make a request to the [rate limit endpoint](https://docs.github.com/en/rest/rate-limit), you can see all the different rate limits.
 
-{{< gist JamieMagee 840fe6382681acbf60b4ed4e4baa8c6c "rate-limits.json" >}}
+```json
+{
+  "resources": {
+    "core": {
+      "limit": 5000,
+      "used": 0,
+      "remaining": 5000,
+      "reset": 1656981763
+    },
+    "search": {
+      "limit": 30,
+      "used": 0,
+      "remaining": 30,
+      "reset": 1656978223
+    },
+    "graphql": {
+      "limit": 5000,
+      "used": 38,
+      "remaining": 4962,
+      "reset": 1656979534
+    },
+    "integration_manifest": {
+      "limit": 5000,
+      "used": 0,
+      "remaining": 5000,
+      "reset": 1656981763
+    },
+    "source_import": {
+      "limit": 100,
+      "used": 0,
+      "remaining": 100,
+      "reset": 1656978223
+    },
+    "code_scanning_upload": {
+      "limit": 1000,
+      "used": 0,
+      "remaining": 1000,
+      "reset": 1656981763
+    },
+    "actions_runner_registration": {
+      "limit": 10000,
+      "used": 0,
+      "remaining": 10000,
+      "reset": 1656981763
+    },
+    "scim": {
+      "limit": 15000,
+      "used": 0,
+      "remaining": 15000,
+      "reset": 1656981763
+    },
+    "dependency_snapshots": {
+      "limit": 100,
+      "used": 0,
+      "remaining": 100,
+      "reset": 1656978223
+    }
+  },
+  "rate": {
+    "limit": 5000,
+    "used": 0,
+    "remaining": 5000,
+    "reset": 1656981763
+  }
+}
+```
 
 The REST API has a rate limit of [5000 requests per hour](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting). Separately, the GraphQL API has a rate limit of [5000 points per hour](https://docs.github.com/en/graphql/overview/resource-limitations#rate-limit).
 
@@ -59,11 +157,17 @@ This tip isn’t strictly about rate limits, but is useful when you’re eking o
 
 For example, here’s the header and body size for a `GET` request:
 
-{{< gist JamieMagee 840fe6382681acbf60b4ed4e4baa8c6c "head.1.sh" >}}
+```bash
+$ curl -w \%{size_header}:\%{size_download} -s -o /dev/null -H "Authorization:token ..." "https://api.github.com/repos/renovatebot/renovate/releases"
+1448:137229
+```
 
 And here’s the header and body size for the `HEAD` equivalent:
 
-{{< gist JamieMagee 840fe6382681acbf60b4ed4e4baa8c6c "head.2.sh" >}}
+```bash
+$ curl -w \%{size_header}:\%{size_download} -s -o /dev/null -H "Authorization:token ..." "https://api.github.com/repos/renovatebot/renovate/releases"
+1448:0
+```
 
 By making a `HEAD` request instead of a `GET` request, you can avoid being sent 137KB.
 

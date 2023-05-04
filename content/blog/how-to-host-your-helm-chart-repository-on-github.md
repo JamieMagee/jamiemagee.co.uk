@@ -12,10 +12,12 @@ Thankfully GitHub has all the tools required, in the form of [GitHub Pages](http
 
 First you need to go ahead and create a `gh-pages` branch in your repository. As I'm writing this there's [an issue](https://github.com/helm/chart-releaser-action/issues/10) open to do this automatically, but to do it manually you can run the following:
 
-    git checkout --orphan gh-pages
-    git rm -rf .
-    git commit -m "Initial commit" --allow-empty
-    git push
+```bash
+git checkout --orphan gh-pages
+git rm -rf .
+git commit -m "Initial commit" --allow-empty
+git push
+```
 
 Once you've done that, you need to enable GitHub Pages in your repository. Go to the settings page on your repository and set the source branch to the `gh-pages` branch you just created.
 
@@ -33,7 +35,16 @@ First up let's look at the pull request workflow.
 
 For each pull request in your chart repository, you want to run a series of different validation and linting tools to catch any avoidable mistakes in your Helm charts. To do that, go ahead and create a workflow in your repository by creating a file at `.github/workflows/ci.yaml` and add the following YAML to it:
 
-{{< gist JamieMagee 8d35ee8114383217c44ab79959b0a7c5 "workflow.yaml" >}}
+```yaml
+name: Lint and Test Charts
+
+on:
+  pull_request:
+    paths:
+      - 'charts/**'
+
+jobs:
+```
 
 This will run the workflow on any pull request that changes files under the charts directory.
 
@@ -43,11 +54,25 @@ That's the skeleton of the workflow sorted, next onto the tools that you're goin
 
 The Helm project created Chart Testing, AKA `ct`, as a comprehensive linting tool for Helm charts. To use it in your pull request build, you'll go ahead and add the following job:
 
-{{< gist JamieMagee 8d35ee8114383217c44ab79959b0a7c5 "lint-charts.yaml" >}}
-
+```yaml
+lint-chart:
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Run chart-testing (lint)
+      uses: helm/chart-testing-action@master
+      with:
+        command: lint
+        config: .github/ct.yaml
+```
 Where `ct.yaml` is:
 
-{{< gist JamieMagee 8d35ee8114383217c44ab79959b0a7c5 "ct.yaml" >}}
+```yaml
+helm-extra-args: --timeout 600
+check-version-increment: true
+debug: true
+```
 
 For a full list of configuration options check out this [sample file](https://github.com/helm/chart-testing/blob/master/pkg/config/test_config.yaml).
 
@@ -64,11 +89,33 @@ Helm-docs isn't strictly a linting tool, but it makes sure that your documentati
 
 To use it as part of your pull request build, you need to add the following job:
 
-{{< gist JamieMagee 8d35ee8114383217c44ab79959b0a7c5 "lint-docs.yaml" >}}
+```yaml
+lint-docs:
+  runs-on: ubuntu-latest
+  needs: lint-chart
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Run helm-docs
+      run: .github/helm-docs.sh
+```
 
 Where [`helm-docs.sh`](http://helm-docs.sh) is:
 
-{{< gist JamieMagee 8d35ee8114383217c44ab79959b0a7c5 "helm-docs.sh" >}}
+```bash
+#!/bin/bash
+set -euo pipefail
+
+HELM_DOCS_VERSION="0.11.0"
+
+# install helm-docs
+curl --silent --show-error --fail --location --output /tmp/helm-docs.tar.gz https://github.com/norwoodj/helm-docs/releases/download/v"${HELM_DOCS_VERSION}"/helm-docs_"${HELM_DOCS_VERSION}"_Linux_x86_64.tar.gz
+tar -xf /tmp/helm-docs.tar.gz helm-docs
+
+# validate docs
+./helm-docs
+git diff --exit-code
+```
 
 This runs Helm-docs against each chart in your repository and generates the `README.md` for each one. Then, using git, you'll fail the build if there are any differences. This ensures that you can't check in any changes to your charts without also updating the documentation.
 
@@ -76,11 +123,49 @@ This runs Helm-docs against each chart in your repository and generates the `REA
 
 Next up is Kubeval. It validates the output from Helm against schemas generated from the Kubernetes OpenAPI specification. You're going to add it to your pull request, and use it to validate across multiple different versions of Kubernetes. Add the following job:
 
-{{< gist JamieMagee 8d35ee8114383217c44ab79959b0a7c5 "kubeval-chart.yaml" >}}
+```yaml
+kubeval-chart:
+  runs-on: ubuntu-latest
+  needs:
+    - lint-chart
+    - lint-docs
+  strategy:
+    matrix:
+      k8s:
+        - v1.12.10
+        - v1.13.12
+        - v1.14.10
+        - v1.15.11
+        - v1.16.8
+        - v1.17.4
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Run kubeval
+      env:
+        KUBERNETES_VERSION: ${{ matrix.k8s }}
+      run: .github/kubeval.sh
+```
 
 Where [`kubeval.sh`](http://kubeval.sh) is:
 
-{{< gist JamieMagee 8d35ee8114383217c44ab79959b0a7c5 "kubeval.sh" >}}
+```bash
+#!/bin/bash
+set -euo pipefail
+
+CHART_DIRS="$(git diff --find-renames --name-only "$(git rev-parse --abbrev-ref HEAD)" remotes/origin/master -- charts | grep '[cC]hart.yaml' | sed -e 's#/[Cc]hart.yaml##g')"
+KUBEVAL_VERSION="0.14.0"
+SCHEMA_LOCATION="https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/"
+
+# install kubeval
+curl --silent --show-error --fail --location --output /tmp/kubeval.tar.gz https://github.com/instrumenta/kubeval/releases/download/"${KUBEVAL_VERSION}"/kubeval-linux-amd64.tar.gz
+tar -xf /tmp/kubeval.tar.gz kubeval
+
+# validate charts
+for CHART_DIR in ${CHART_DIRS}; do
+  helm template "${CHART_DIR}" | ./kubeval --strict --ignore-missing-schemas --kubernetes-version "${KUBERNETES_VERSION#v}" --schema-location "${SCHEMA_LOCATION}"
+done
+```
 
 This script is a bit longer, but if you break it down step-by-step it's essentially:
 
@@ -100,7 +185,36 @@ Finally you're going to use Chart Testing again to install your Helm charts on a
 
 KIND doesn't publish Docker images for each version of Kubernetes, so you need to look at the Docker [image tags](https://hub.docker.com/r/kindest/node/tags). That's why the Kubernetes versions in this job won't necessarily match the versions used for the Kubeval job.
 
-{{< gist JamieMagee 8d35ee8114383217c44ab79959b0a7c5 "install-chart.yaml" >}}
+```yaml
+install-chart:
+  name: install-chart
+  runs-on: ubuntu-latest
+  needs:
+    - lint-chart
+    - lint-docs
+    - kubeval-chart
+  strategy:
+    matrix:
+      k8s:
+        - v1.12.10
+        - v1.13.12
+        - v1.14.10
+        - v1.15.7
+        - v1.16.4
+        - v1.17.2
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Create kind ${{ matrix.k8s }} cluster
+      uses: helm/kind-action@master
+      with:
+        node_image: kindest/node:${{ matrix.k8s }}
+    - name: Run chart-testing (install)
+      uses: helm/chart-testing-action@master
+      with:
+        command: install
+        config: .github/ct.yaml
+```
 
 So you got a temporary Kubernetes cluster, installed your charts on it, and ran any [helm tests](https://helm.sh/docs/topics/chart_tests/) (that you definitely wrote 🙄). This is the ultimate test of your Helm chart—installing and running it. If this passes, and you merge your pull request, you're ready to release!
 
@@ -110,7 +224,31 @@ Remember that `gh-pages` branch you created earlier? Now you can use it to publi
 
 You're going to create another GitHub workflow, this time at `.github/workflows/release.yaml`. This one is going to be significantly simpler:
 
-{{< gist JamieMagee 8d35ee8114383217c44ab79959b0a7c5 "release.yaml" >}}
+```yaml
+name: Release Charts
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'charts/**'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@master
+        env:
+          CR_TOKEN: '${{ secrets.CR_TOKEN }}'
+```
 
 It will check out the repository, set the configuration of Git to the user that kicked-off the workflow, and run the chart releaser action. The chart releaser action will package the chart, create a release from it, and update the `index.yaml` file in the `gh-pages` branch. Simple!
 
