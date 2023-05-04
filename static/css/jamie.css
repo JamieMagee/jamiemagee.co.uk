@@ -56,9 +56,16 @@ a.pagination-item:hover {
   }
 }
 
+code,
+pre {
+  font-family: 'Fira Mono', 'Courier New', Courier, monospace;
+  font-size: 75%;
+}
+
 .highlight {
   border-radius: 5px;
   padding: 5px;
+  border: 1px #ddd solid;
   border-left: 5px #75b5aa solid;
   background-color: #fff;
 }
