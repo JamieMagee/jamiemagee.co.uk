@@ -60,6 +60,9 @@ code,
 pre {
   font-family: 'Fira Mono', 'Courier New', Courier, monospace;
   font-size: 75%;
+  white-space: pre;
+  overflow-x: scroll;
+  padding-bottom: 1em;
 }
 
 .highlight {
