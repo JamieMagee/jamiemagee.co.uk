@@ -15,8 +15,14 @@
   <link rel="stylesheet" href="{{ "/css/poole-overrides.css" | absURL }}">
   <link rel="stylesheet" href="{{ "/css/hyde-overrides.css" | absURL }}">
   <link rel="stylesheet" href="{{ "/css/hyde-x.css" | absURL }}">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface|Fira+Mono">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    @font-face {
+      font-family: 'Berkeley Mono';
+      src: url('{{ "/fonts/BerkeleyMono-Regular.woff2" | absURL }}') format('woff2');
+    }
+  </style>
   {{ with .Site.Params.customCSS }}<link rel="stylesheet" href="{{ . }}">{{ end }}
 
   <!-- Icons -->
