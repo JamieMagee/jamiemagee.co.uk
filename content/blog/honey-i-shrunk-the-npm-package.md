@@ -4,7 +4,7 @@ date: '2023-09-27'
 comments: true
 ---
 
-Have you ever wondered what lies beneath the surface of an npm package? At its heart, it’s nothing more than a gzipped tarball. Working in software development, source code and binary artifacts are nearly always shipped as `.tar.gz` or `.tgz` files. And gzip compression is supported by every HTTP server and web browser out there. [caniuse.com](http://caniuse.com) doesn’t even give statistics for support, it just says “[supported in effectively all browsers](https://caniuse.com/sr_content-encoding-gzip)”. But here's the kicker: gzip is starting to show its age, making way for newer, more modern compression algorithms like Brotli and ZStandard. Now, imagine a world where npm embraces one of these new algorithms. In this blog post, I'll dive into the realm of compression and explore the possibilities of moderinising npm's compression strategy.
+Have you ever wondered what lies beneath the surface of an npm package? At its heart, it’s nothing more than a gzipped tarball. Working in software development, source code and binary artifacts are nearly always shipped as `.tar.gz` or `.tgz` files. And gzip compression is supported by every HTTP server and web browser out there. [caniuse.com](http://caniuse.com) doesn’t even give statistics for support, it just says “[supported in effectively all browsers](https://caniuse.com/sr_content-encoding-gzip)”. But here's the kicker: gzip is starting to show its age, making way for newer, more modern compression algorithms like Brotli and ZStandard. Now, imagine a world where npm embraces one of these new algorithms. In this blog post, I'll dive into the realm of compression and explore the possibilities of modernising npm's compression strategy.
 
 ## What’s the competition?
 
@@ -64,7 +64,7 @@ $ hyperfine --runs 100 --export-markdown hyperfine.md \
 | tar --use-compress-program zstd --extract --file npm-9.7.1.tar.zst --overwrite | 39.5 ± 3.0 | 33.5 | 51.8 | 1.00 |
 | tar --use-compress-program gzip --extract --file npm-9.7.1.tgz --overwrite | 47.0 ± 1.7 | 44.0 | 54.9 | 1.19 ± 0.10 |
 
-This time zstd comes out in front, followed by gzip and Brotli. This makes sense, as “real-time compression” is one of the big features that is touted in [zstd’s documentation.](https://facebook.github.io/zstd/) While Brotli is 31% slower compared to zstd, in real terms it's only 12ms. And compared to gzip, it’s only 5ms slower. To put that into context, you’d need a more than 1Gbps connection to make up for the 5ms loss it has in decompression compared with the 1MB it saves in package size.
+This time zstd comes out in front, followed by gzip and Brotli. This makes sense, as “real-time compression” is one of the big features that is touted in [zstd’s documentation](https://facebook.github.io/zstd/). While Brotli is 31% slower compared to zstd, in real terms it's only 12ms. And compared to gzip, it’s only 5ms slower. To put that into context, you’d need a more than 1Gbps connection to make up for the 5ms loss it has in decompression compared with the 1MB it saves in package size.
 
 ## Benchmarking part 3: This time it’s serious
 
@@ -168,4 +168,4 @@ I admit that this is an *incredibly* long transition period. However, it will gu
 
 ## What’s next?
 
-As I wrap up my exploration into npm compression, I must admit that my journey has only just begun. To push the boundaries further, there are a lot more steps. First and foremost, I need to do some more extensive benchmarking with [the top 250 most downloaded npm packages](https://socket.dev/npm/category/popular), instead of focusing on a single package. One that’s complete, I need to draft an npm RFC and seek feedback from the wider community. If you're interested in helping out, or just want to see how it's going, you can follow me on Mastodon at [@JamieMagee@infosec.exchange](https://infosec.exchange/@JamieMagee), or on Twitter at [@Jamie_Magee](https://twitter.com/Jamie_Magee).
+As I wrap up my exploration into npm compression, I must admit that my journey has only just begun. To push the boundaries further, there are a lot more steps. First and foremost, I need to do some more extensive benchmarking with [the top 250 most downloaded npm packages](https://socket.dev/npm/category/popular), instead of focusing on a single package. Once that’s complete, I need to draft an npm RFC and seek feedback from the wider community. If you're interested in helping out, or just want to see how it's going, you can follow me on Mastodon at [@JamieMagee@infosec.exchange](https://infosec.exchange/@JamieMagee), or on Twitter at [@Jamie_Magee](https://twitter.com/Jamie_Magee).
