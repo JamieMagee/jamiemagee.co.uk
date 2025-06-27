@@ -149,7 +149,7 @@ Hyde-X provides 8 built-in colour themes by default, with the option to define m
 * Sidebar link layout and footer format changes.
 * Blog post list now contains only the post description, not the full contents.
 * Paginated blog listing.
-* [FontAwesome](http://fortawesome.github.io/Font-Awesome) social links.
+* [Font Awesome 6](https://fontawesome.com) social links.
 * ...many other small layout tweaks!
 
 ### Attribution

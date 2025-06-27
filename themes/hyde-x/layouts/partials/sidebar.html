@@ -16,9 +16,10 @@
 
     <ul class="sidebar-nav">
       <li class="sidebar-nav-item">
-      {{ with .Site.Params.github }}<a href="{{ . }}"><i class="fa fa-github-square fa-3x"></i></a>{{ end }}
-      {{ with .Site.Params.linkedin }}<a href="{{ . }}"><i class="fa fa-linkedin-square fa-3x"></i></a>{{ end }}
-      {{ if .Site.Params.rss }}<a href="{{ "/index.xml" | absURL }}" type="application/rss+xml"><i class="fa fa-rss-square fa-3x"></i></a>{{ end }}
+      {{ with .Site.Params.github }}<a href="{{ . }}"><i class="fa-brands fa-github-square fa-3x"></i></a>{{ end }}
+      {{ with .Site.Params.bluesky }}<a href="{{ . }}"><i class="fa-brands fa-square-bluesky fa-3x"></i></a>{{ end }}
+      {{ with .Site.Params.linkedin }}<a href="{{ . }}"><i class="fa-brands fa-linkedin fa-3x"></i></a>{{ end }}
+      {{ if .Site.Params.rss }}<a href="{{ "/index.xml" | absURL }}" type="application/rss+xml"><i class="fa-solid fa-rss-square fa-3x"></i></a>{{ end }}
       </li>
     </ul>
 
