@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
-  <link href="http://gmpg.org/xfn/11" rel="profile">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta charset="utf-8">
+  <link href="https://gmpg.org/xfn/11" rel="profile">
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-  <title>{{ .Title }} &middot; {{ .Site.Params.author }}</title>
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ if .Site.Params.tagline }} &middot; {{ .Site.Params.tagline }}{{ end }}{{ else }}{{ .Title }} &middot; {{ .Site.Params.author }}{{ end }}</title>
 
   <!-- Preload -->
   <link rel="preload" href="{{ "/css/poole.css" | absURL }}" as="style">
@@ -15,8 +15,9 @@
   <link rel="preload" href="{{ "/css/poole-overrides.css" | absURL }}" as="style">
   <link rel="preload" href="{{ "/css/hyde-overrides.css" | absURL }}" as="style">
   <link rel="preload" href="{{ "/css/hyde-x.css" | absURL }}" as="style">
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface" as="font">
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style">
+  <link rel="preload" href="{{ "/fonts/BerkeleyMono-Regular.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface" as="style" crossorigin>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" crossorigin>
 
   <!-- CSS -->
   <link rel="stylesheet" href="{{ "/css/poole.css" | absURL }}">
@@ -24,31 +25,33 @@
   <link rel="stylesheet" href="{{ "/css/poole-overrides.css" | absURL }}">
   <link rel="stylesheet" href="{{ "/css/hyde-overrides.css" | absURL }}">
   <link rel="stylesheet" href="{{ "/css/hyde-x.css" | absURL }}">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin>
   <style>
     @font-face {
       font-family: 'Berkeley Mono';
       src: url('{{ "/fonts/BerkeleyMono-Regular.woff2" | absURL }}') format('woff2');
+      font-display: swap;
     }
   </style>
   {{ with .Site.Params.customCSS }}<link rel="stylesheet" href="{{ . }}">{{ end }}
 
   <!-- Icons -->
   <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ "/apple-touch-icon-144-precomposed.png" | absURL }}">
-  <link href="{{ "/favicon.ico" | absURL }}" rel="icon">
+  <link rel="icon" type="image/x-icon" href="{{ "/favicon.ico" | absURL }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ "/favicon.ico" | absURL }}">
 
   <!-- RSS -->
   {{ with .OutputFormats.Get "rss" -}}
     {{ printf `<link rel=%q type=%q href=%q title=%q>` .Rel .MediaType.Type .Permalink site.Title | safeHTML }}
   {{ end }}
 
-
   <meta name="description" content="{{ if ne .Description "" }}{{ .Description }}{{ else }}{{ .Site.Params.defaultDescription }}{{ end }}">
   <meta name="keywords" content="{{ range $index, $element := .Keywords }}{{ if gt $index 0 }},{{ end }}{{ . }}{{ else }}{{ .Site.Params.defaultKeywords }}{{ end }}">
+  <meta name="author" content="{{ .Site.Params.author }}">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="{{ .Permalink }}">
 
   {{ template "_internal/opengraph.html" . }}
   {{ template "_internal/twitter_cards.html" . }}
 </head>
-<body{{ with .Site.Params.theme }} class="{{ . }}"{{ end }}>
-{{ partial "sidebar.html" . }}
