@@ -7,7 +7,7 @@
       <h1 class="post-title">
         <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
       </h1>
-      <span class="post-date">{{ .Date.Format "Jan 2, 2006" }}{{ if not .Site.Params.hideReadingTime }} &middot; {{ .ReadingTime }} minute read{{ end }}{{ if .Site.DisqusShortname }} &middot; <a href="{{ .Permalink }}#disqus_thread">Comments</a>{{ end }}
+      <span class="post-date">{{ .Date.Format "Jan 2, 2006" }}{{ if not .Site.Params.hideReadingTime }} &middot; {{ .ReadingTime }} minute read{{ end }}
       {{ if isset .Params "categories" }}
       <br/>
       {{ range .Params.categories }}<a class="label" href="{{ "/categories/" | absURL }}{{ . | urlize }}">{{ . }}</a>{{ end }}
@@ -24,19 +24,7 @@
     </div>
     {{ end }}
     {{ partial "pagination.html" . }}
-    <!-- {{ template "_internal/pagination.html" . }} -->
   </div>
 </div>
 
-{{ with .Site.DisqusShortname }}
-<script type="text/javascript">
-var disqus_shortname = {{ . }};
-(function () {
-    var s = document.createElement('script'); s.async = true;
-    s.type = 'text/javascript';
-    s.src = '//' + disqus_shortname + '.disqus.com/count.js';
-    (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-}());
-</script>
-{{ end }}
 {{ partial "foot.html" . }}
