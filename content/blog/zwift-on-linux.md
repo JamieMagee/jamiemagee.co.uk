@@ -18,7 +18,7 @@ This might take a while, and depending on your internet speed could be anywhere 
 
 Once the Zwift launcher has finished downloading and updating, we've hit the first hurdle that can't be scripted with Lutris.
 
-{{< youtube punu7GdyrsE >}}
+{{< lite-youtube videoid="punu7GdyrsE" videotitle="Zwift on Linux - Part Two" />}}
 
 The launcher will appear as a blank white window. Actually, the launcher is displaying a web page, but Wine can't render properly. Thankfully all the files are already downloaded, so all you need to do is quit the launcher window, and exit Zwift from the Wine system menu. After that, the Lutris installer should complete.
 
@@ -28,4 +28,4 @@ Zwift requires the Launcher to be running all the time while in-game. However, L
 
 Finally, you can hit the “Play” button and Ride On 👍
 
-{{< youtube GhTK0sI1AXA >}}
+{{< lite-youtube videoid="GhTK0sI1AXA" videotitle="Zwift on Linux - Part Three" />}}

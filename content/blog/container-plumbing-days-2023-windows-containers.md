@@ -10,4 +10,4 @@ Instead of allowing this gap to widen further, container tool authors—especial
 
 In my presentation at [Container Plumbing Days 2023](https://containerplumbing.org/) I showed how to extract version information from Windows containers images that can be used to generate SBOMs, as well as how to integrate with the Microsoft Security Updates API which can provide detailed vulnerability information.
 
-<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; } .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style><div class='embed-container'><iframe src='https://www.youtube.com/embed/RZ4PBDjtrc0' frameborder='0' allowfullscreen></iframe></div>
+{{< lite-youtube videoid="RZ4PBDjtrc0" videotitle="Container Plumbing Days 2023: Windows Containers" />}}

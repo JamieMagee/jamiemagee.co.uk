@@ -18,6 +18,7 @@
   <link rel="preload" href="{{ "/fonts/BerkeleyMono-Regular.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface" as="style" crossorigin>
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" as="style" crossorigin>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1/lite-youtube.min.js" as="script" crossorigin>
 
   <!-- CSS -->
   <link rel="stylesheet" href="{{ "/css/poole.css" | absURL }}">
@@ -32,6 +33,46 @@
       font-family: 'Berkeley Mono';
       src: url('{{ "/fonts/BerkeleyMono-Regular.woff2" | absURL }}') format('woff2');
       font-display: swap;
+    }
+    
+    /* lite-youtube fallback styles */
+    .lite-youtube-fallback {
+      aspect-ratio: 16 / 9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 1em;
+      padding: 1em;
+      background-color: #000;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+    }
+
+    .lite-youtube-fallback:hover {
+      background-color: #333;
+      color: #fff;
+    }
+
+    /* Play button triangle */
+    .lite-youtube-fallback::before {
+      display: block;
+      content: '';
+      border: solid transparent;
+      border-width: 2em 0 2em 3em;
+      border-left-color: #ff0000;
+      transition: border-left-color 0.2s ease;
+    }
+
+    .lite-youtube-fallback:hover::before {
+      border-left-color: #fff;
+    }
+
+    .lite-youtube-fallback:focus {
+      outline: 2px solid #ff0000;
+      outline-offset: 2px;
     }
   </style>
   {{ with .Site.Params.customCSS }}<link rel="stylesheet" href="{{ . }}">{{ end }}
@@ -54,4 +95,7 @@
 
   {{ template "_internal/opengraph.html" . }}
   {{ template "_internal/twitter_cards.html" . }}
+
+  <!-- lite-youtube web component -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1/lite-youtube.min.js"></script>
 </head>

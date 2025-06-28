@@ -1,0 +1,72 @@
+{{/*
+lite-youtube shortcode for embedding YouTube videos with performance optimization
+
+Usage examples:
+- Basic: {{< lite-youtube videoid="dQw4w9WgXcQ" >}}
+- With title: {{< lite-youtube videoid="dQw4w9WgXcQ" videotitle="Rick Astley - Never Gonna Give You Up" >}}
+- With start time: {{< lite-youtube videoid="dQw4w9WgXcQ" videostartat="30" >}}
+- Autoload: {{< lite-youtube videoid="dQw4w9WgXcQ" autoload="true" >}}
+- High quality poster: {{< lite-youtube videoid="dQw4w9WgXcQ" posterquality="maxresdefault" >}}
+- With YouTube params: {{< lite-youtube videoid="dQw4w9WgXcQ" params="controls=0&loop=1" >}}
+- Playlist: {{< lite-youtube videoid="dQw4w9WgXcQ" playlistid="PLrAXtmRdnEQy6nuLMvS-odjJn1whMYHOB" >}}
+- YouTube Shorts: {{< lite-youtube videoid="vMImN9gghao" short="true" >}}
+- No cookie: {{< lite-youtube videoid="dQw4w9WgXcQ" nocookie="true" >}}
+- Auto pause: {{< lite-youtube videoid="dQw4w9WgXcQ" autopause="true" >}}
+- Custom play button text: {{< lite-youtube videoid="dQw4w9WgXcQ" videoplay="Reproducir" >}}
+
+Parameters:
+- videoid (required): YouTube video ID
+- videotitle: Title of the video for accessibility
+- videoplay: Text for the play button (default: "Play")
+- videostartat: Start time in seconds
+- posterquality: Thumbnail quality (hqdefault, mqdefault, sddefault, maxresdefault)
+- posterloading: Image loading attribute (lazy, eager)
+- nocookie: Use youtube-nocookie.com domain
+- autoload: Load iframe when scrolled into view
+- autopause: Pause video when scrolled out of view
+- short: Enable YouTube Shorts mobile interaction
+- disablenoscript: Disable noscript fallback
+- params: YouTube query parameters
+- playlistid: YouTube playlist ID (requires videoid for thumbnail)
+*/}}
+
+{{- $videoid := .Get "videoid" -}}
+{{- if not $videoid -}}
+  {{- errorf "The %q shortcode requires a 'videoid' argument: see %s" .Name .Position -}}
+{{- end -}}
+
+{{- $videotitle := .Get "videotitle" | default "Video" -}}
+{{- $videoplay := .Get "videoplay" | default "Play" -}}
+{{- $videostartat := .Get "videostartat" -}}
+{{- $posterquality := .Get "posterquality" | default "hqdefault" -}}
+{{- $posterloading := .Get "posterloading" | default "lazy" -}}
+{{- $nocookie := .Get "nocookie" -}}
+{{- $autoload := .Get "autoload" -}}
+{{- $autopause := .Get "autopause" -}}
+{{- $short := .Get "short" -}}
+{{- $disablenoscript := .Get "disablenoscript" -}}
+{{- $params := .Get "params" -}}
+{{- $playlistid := .Get "playlistid" -}}
+
+<lite-youtube 
+  videoid="{{ $videoid }}"
+  {{- with $videotitle }} videotitle="{{ . }}"{{ end }}
+  {{- with $videoplay }} videoplay="{{ . }}"{{ end }}
+  {{- with $videostartat }} videostartat="{{ . }}"{{ end }}
+  {{- with $posterquality }} posterquality="{{ . }}"{{ end }}
+  {{- with $posterloading }} posterloading="{{ . }}"{{ end }}
+  {{- with $playlistid }} playlistid="{{ . }}"{{ end }}
+  {{- with $params }} params="{{ . }}"{{ end }}
+  {{- if eq $nocookie "true" }} nocookie{{ end }}
+  {{- if eq $autoload "true" }} autoload{{ end }}
+  {{- if eq $autopause "true" }} autopause{{ end }}
+  {{- if eq $short "true" }} short{{ end }}
+  {{- if eq $disablenoscript "true" }} disablenoscript{{ end }}>
+  {{- if .Inner }}
+    {{- .Inner | .Page.RenderString -}}
+  {{- else }}
+    <a class="lite-youtube-fallback" href="https://www.youtube.com/watch?v={{ $videoid }}">
+      Watch on YouTube: "{{ $videotitle }}"
+    </a>
+  {{- end }}
+</lite-youtube>
