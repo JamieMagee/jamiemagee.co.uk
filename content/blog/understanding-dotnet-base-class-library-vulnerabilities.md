@@ -1,6 +1,6 @@
 ---
 title: Understanding .NET Base Class Library Vulnerabilities
-date: '2025-07-13'
+date: '2025-07-18'
 comments: true
 ---
 
