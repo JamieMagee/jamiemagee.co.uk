@@ -42,7 +42,9 @@ The most obvious solution is to add an explicit package reference to the vulnera
 </Project>
 ```
 
-This approach leverages NuGet's ["direct dependency wins"](https://learn.microsoft.com/en-us/nuget/concepts/dependency-resolution#direct-dependency-wins) rule. When your application has both an implicit dependency (from the runtime) and an explicit dependency (from your `.csproj`), the explicit one takes precedence.
+This approach leverages NuGet's ["direct dependency wins"](https://learn.microsoft.com/en-us/nuget/concepts/dependency-resolution#direct-dependency-wins) rule. When your application has both an implicit dependency (from the runtime) and an explicit dependency (from your `.csproj`), the explicit one takes precedence, but only if the explicit version is equal to or higher than the BCL version in the runtime.
+
+Here's the crucial detail: if you specify a lower version than what's bundled with the runtime, .NET will still use the runtime version. For example, if your runtime includes `System.Text.Json` version 8.0.4 and you explicitly reference version 8.0.2, the runtime version (8.0.4) will be used. This means you can't accidentally downgrade to a vulnerable version, but it also means your explicit reference must be at least as recent as the runtime version to take effect.
 
 While this works, it's not a scalable long-term solution. The .NET runtime includes hundreds of libraries, and making all implicit references explicit would significantly clutter your project files and create a maintenance burden.
 
