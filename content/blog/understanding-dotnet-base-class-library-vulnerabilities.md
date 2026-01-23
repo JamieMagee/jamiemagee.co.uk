@@ -6,7 +6,7 @@ comments: true
 
 When you create a new .NET project and start writing code, you might find yourself using classes like `System.Text.Json.JsonSerializer` without ever explicitly adding a reference to `System.Text.Json` in your `.csproj` file. This isn't magic—it's because these Base Class Libraries (BCLs) are shipped as part of the .NET runtime itself, making them implicit references that are automatically available to your application.
 
-But this convenience comes with a hidden security implication that many developers don't realize: when a vulnerability is discovered in one of these implicit dependencies, patching it isn't as straightforward as updating a NuGet package reference.
+But this convenience comes with a security implication that's easy to miss: when a vulnerability is discovered in one of these implicit dependencies, patching it isn't as straightforward as updating a NuGet package reference.
 
 ## The invisible dependency problem
 
@@ -44,13 +44,13 @@ The most obvious solution is to add an explicit package reference to the vulnera
 
 This approach leverages NuGet's ["direct dependency wins"](https://learn.microsoft.com/en-us/nuget/concepts/dependency-resolution#direct-dependency-wins) rule. When your application has both an implicit dependency (from the runtime) and an explicit dependency (from your `.csproj`), the explicit one takes precedence, but only if the explicit version is equal to or higher than the BCL version in the runtime.
 
-Here's the crucial detail: if you specify a lower version than what's bundled with the runtime, .NET will still use the runtime version. For example, if your runtime includes `System.Text.Json` version 8.0.4 and you explicitly reference version 8.0.2, the runtime version (8.0.4) will be used. This means you can't accidentally downgrade to a vulnerable version, but it also means your explicit reference must be at least as recent as the runtime version to take effect.
+Here's the catch: if you specify a lower version than what's bundled with the runtime, .NET will still use the runtime version. For example, if your runtime includes `System.Text.Json` version 8.0.4 and you explicitly reference version 8.0.2, the runtime version (8.0.4) will be used. This means you can't accidentally downgrade to a vulnerable version, but it also means your explicit reference must be at least as recent as the runtime version to take effect.
 
-While this works, it's not a scalable long-term solution. The .NET runtime includes hundreds of libraries, and making all implicit references explicit would significantly clutter your project files and create a maintenance burden.
+While this works, it's not a scalable long-term solution. The .NET runtime includes hundreds of libraries, and making all implicit references explicit would clutter your project files and create a maintenance burden.
 
 ### Option 2: Set a minimum SDK version with global.json
 
-A more sustainable approach is to use `global.json` to specify a minimum .NET SDK version that includes the patched libraries:
+A better approach is to use `global.json` to specify a minimum .NET SDK version that includes the patched libraries:
 
 ```json
 {
@@ -63,11 +63,11 @@ A more sustainable approach is to use `global.json` to specify a minimum .NET SD
 
 This ensures that anyone building your project—whether locally, in CI/CD, or when deploying—uses at least the specified SDK version, which includes the security patches for all Base Class Libraries.
 
-## The self-contained deployment consideration
+## Self-contained deployments
 
-This distinction becomes even more critical if you're shipping [self-contained applications](https://learn.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained). When you publish a self-contained app, the .NET runtime is bundled with your application, including all the Base Class Libraries. If you build your self-contained app with an older SDK that contains vulnerable libraries, those vulnerabilities get shipped with your application.
+This matters even more if you're shipping [self-contained applications](https://learn.microsoft.com/en-us/dotnet/core/deploying/#publish-self-contained). When you publish a self-contained app, the .NET runtime is bundled with your application, including all the Base Class Libraries. If you build your self-contained app with an older SDK that contains vulnerable libraries, those vulnerabilities get shipped with your application.
 
-For self-contained deployments, ensuring you're building with an up-to-date SDK isn't just about development convenience—it's a security requirement. A `global.json` file becomes essential for maintaining a security baseline across your entire deployment pipeline.
+For self-contained deployments, building with an up-to-date SDK isn't just about development convenience—it's a security requirement. A `global.json` file becomes necessary for maintaining a security baseline across your entire deployment pipeline.
 
 ## The current developer experience pain
 
@@ -75,7 +75,7 @@ Currently, if you don't have the correct SDK version installed and try to build 
 
 The good news is that the .NET team is aware of the problem. There's an ongoing effort tracked in [dotnet/cli-lab#390](https://github.com/dotnet/cli-lab/issues/390) to create a .NET bootstrapper that will improve SDK acquisition and provide better error messages. This work aims to make .NET 10 much more user-friendly when dealing with SDK version mismatches.
 
-## A familiar challenge in other runtimes
+## What about other runtimes?
 
 This pattern of implicit runtime dependencies isn't unique to .NET. Java developers face a remarkably similar challenge with the Java standard library. When a vulnerability is discovered in a core Java package like `java.util` or `java.security`, the remediation path typically involves updating the entire Java Runtime Environment (JRE) or Java Development Kit (JDK).
 
@@ -85,8 +85,8 @@ However, Java's ecosystem has traditionally been more rigid in this regard. Whil
 
 The key difference is that .NET's package management system provides more flexibility—you can sometimes work around runtime library issues with explicit package references, whereas Java applications usually have no choice but to update their entire runtime environment.
 
-## The path forward
+## Wrapping up
 
-The implicit nature of .NET's Base Class Libraries provides excellent developer productivity, but it also creates a unique security challenge. Unlike traditional NuGet dependencies that appear in your project file, BCL vulnerabilities require a different approach to remediation.
+.NET's Base Class Libraries make development faster, but they also create a security challenge that's different from normal NuGet dependencies. BCL vulnerabilities don't show up in your project file, so they need a different fix.
 
-By understanding this distinction and adopting `global.json` as part of your security strategy, you can ensure your applications stay protected against vulnerabilities in both explicit and implicit dependencies. And with the improvements coming in .NET 10, this process should become much more seamless for developers.
+Using `global.json` as part of your security strategy helps keep your applications protected against vulnerabilities in both explicit and implicit dependencies. The improvements coming in .NET 10 should make this easier to manage.
