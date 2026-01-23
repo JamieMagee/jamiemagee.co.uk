@@ -2,6 +2,7 @@ baseURL = "/"
 languageCode = "en-gb"
 title = "Jamie Magee"
 theme = "hyde-x"
+disableKinds = ['taxonomy', 'term']
 
 [pagination]
   pagerSize = 5
