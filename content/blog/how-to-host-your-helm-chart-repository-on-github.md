@@ -269,4 +269,4 @@ helm repo update
 
 And for the latter, the Helm project have written [a comprehensive guide](https://github.com/helm/hub/blob/master/Repositories.md) that I couldn't possibly top.
 
-If you want to see all these pieces working together checkout the [renovatebot/helm-charts](https://github.com/renovatebot/helm-charts) repository, or our page on [Helm Hub](https://hub.helm.sh/charts/renovate/renovate). And if you would like some help please reach out to me on Twitter at [@Jamie_Magee](https://twitter.com/Jamie_Magee).
+If you want to see all these pieces working together checkout the [renovatebot/helm-charts](https://github.com/renovatebot/helm-charts) repository, or our page on [Helm Hub](https://hub.helm.sh/charts/renovate/renovate). And if you would like some help please reach out to me on Bluesky at [@jamiemagee.bsky.social](https://bsky.app/profile/jamiemagee.bsky.social).
