@@ -10,13 +10,13 @@ A hashflag, sometimes called Twitter emoji, is a small image that appears after 
 
 If you're a company, and [you have enough money](http://www.adweek.com/digital/twitters-branded-emojis-come-million-dollar-commitment-169327/), you can buy your own hashflag as well! That's exactly what Disney did for the release of Star Wars: The Last Jedi.
 
-{{< tweet user="GMA" id="935573161051152385" >}}
+{{< x user="GMA" id="935573161051152385" >}}
 
 If you spend the money to buy a hashflag, it's important that you launch it correctly—otherwise they can flop. [#白白白白白白白白白白](https://twitter.com/HashflagArchive/status/960529700442566656) is an example of what not to do. At time of writing, it has only 10 uses.
 
 Hashflags aren't exclusive to English, and they can help add context to a tweet in another language. I don't speak any Russian, but I do know that this image is of BB-8!
 
-{{< tweet user="HashflagArchive" id="956184319206273024" >}}
+{{< x user="HashflagArchive" id="956184319206273024" >}}
 
 Unfortunately hashflags are temporary, so any context they add to a tweet can sometimes be lost at a later date. Currently Twitter doesn't provide an official API for hashflags, and there is no canonical list of currently active hashflags. [@hashflaglist](https://twitter.com/hashflaglist) tracks hashflags, but it's easy to miss one—this is where Azure Functions come in.
 
