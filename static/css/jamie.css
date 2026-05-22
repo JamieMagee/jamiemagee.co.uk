@@ -59,10 +59,17 @@ a.pagination-item:hover {
 code,
 pre {
   font-family: 'Berkeley Mono', 'Courier New', Courier, monospace;
-  font-size: 75%;
+}
+
+code {
+  overflow-wrap: anywhere;
+}
+
+pre {
   white-space: pre;
-  overflow-x: scroll;
+  overflow-x: auto;
   padding-bottom: 1em;
+  tab-size: 2;
 }
 
 .highlight {
