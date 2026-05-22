@@ -6,6 +6,30 @@
   color: rgba(255, 255, 255, 1);
 }
 
+.social-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.social-icons a {
+  display: inline-flex;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.15s ease;
+}
+
+.social-icons a:hover,
+.social-icons a:focus {
+  color: rgba(255, 255, 255, 1);
+}
+
+.social-icons svg {
+  width: 3rem;
+  height: 3rem;
+  display: block;
+}
+
 .pagination {
   display: block;
   overflow: hidden;

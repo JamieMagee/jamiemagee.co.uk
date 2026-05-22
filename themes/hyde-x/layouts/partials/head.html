@@ -9,18 +9,16 @@
 
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ if .Site.Params.tagline }} &middot; {{ .Site.Params.tagline }}{{ end }}{{ else }}{{ .Title }} &middot; {{ .Site.Params.author }}{{ end }}</title>
 
-  <!-- Preconnect to third-party origins to cut DNS/TLS time -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-
   <!-- Preload -->
   <link rel="preload" href="{{ "/css/poole.css" | absURL }}" as="style">
   <link rel="preload" href="{{ "/css/hyde.css" | absURL }}" as="style">
   <link rel="preload" href="{{ "/css/poole-overrides.css" | absURL }}" as="style">
   <link rel="preload" href="{{ "/css/hyde-overrides.css" | absURL }}" as="style">
   <link rel="preload" href="{{ "/css/hyde-x.css" | absURL }}" as="style">
+  <link rel="preload" href="{{ "/css/fonts.css" | absURL }}" as="style">
   <link rel="preload" href="{{ "/fonts/BerkeleyMono-Regular.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ "/fonts/pt-sans-400-latin.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ "/fonts/abril-fatface-400-latin.woff2" | absURL }}" as="font" type="font/woff2" crossorigin>
 
   <!-- CSS -->
   <link rel="stylesheet" href="{{ "/css/poole.css" | absURL }}">
@@ -28,11 +26,7 @@
   <link rel="stylesheet" href="{{ "/css/poole-overrides.css" | absURL }}">
   <link rel="stylesheet" href="{{ "/css/hyde-overrides.css" | absURL }}">
   <link rel="stylesheet" href="{{ "/css/hyde-x.css" | absURL }}">
-  <!-- Google Fonts: display=optional avoids FOUT/CLS by skipping the swap if the font isn't ready in time -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface&display=optional" crossorigin>
-  <!-- Font Awesome loaded non-render-blocking -->
-  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" as="style" crossorigin onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" crossorigin></noscript>
+  <link rel="stylesheet" href="{{ "/css/fonts.css" | absURL }}">
   <style>
     @font-face {
       font-family: 'Berkeley Mono';

@@ -1,0 +1,8 @@
+The fonts in this directory (PT Sans, Abril Fatface) are licensed under the
+SIL Open Font License, Version 1.1.
+
+Full licence text: https://openfontlicense.org/open-font-license-official-text/
+
+- PT Sans: Copyright (c) ParaType Ltd. Reserved Font Name "PT Sans".
+- Abril Fatface: Copyright (c) TypeTogether. Reserved Font Name "Abril Fatface".
+- Berkeley Mono: Licensed separately by the foundry; not under OFL.
