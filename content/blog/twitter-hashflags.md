@@ -2,6 +2,8 @@
 title: Twitter Hashflags (_Hash-what?_)
 date: '2018-03-28'
 comments: true
+aliases:
+  - /2018/03/28/twitter-hashflags/
 ---
 
 Have you ever tweeted out a hastag, and discovered a small image attached to the side of it? It could be for [#StPatricksDay](https://twitter.com/HashflagArchive/status/972005822388514818), [#MarchForOurLives](https://twitter.com/HashflagArchive/status/972170656912723969), or whatever [#白白白白白白白白白白](https://twitter.com/HashflagArchive/status/960529700442566656) is meant to be. These are hashflags.
