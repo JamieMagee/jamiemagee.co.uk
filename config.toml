@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://jamiemagee.co.uk/"
 languageCode = "en-gb"
 title = "Jamie Magee"
 theme = "hyde-x"
