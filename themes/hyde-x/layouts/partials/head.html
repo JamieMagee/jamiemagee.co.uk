@@ -9,6 +9,9 @@
 
   <title>{{ if .IsHome }}{{ .Site.Title }}{{ if .Site.Params.tagline }} &middot; {{ .Site.Params.tagline }}{{ end }}{{ else }}{{ .Title }} &middot; {{ .Site.Params.author }}{{ end }}</title>
 
+  <!-- Canonical URL -->
+  <link rel="canonical" href="{{ .Permalink }}">
+
   <!-- Preload -->
   <link rel="preload" href="{{ "/css/poole.css" | absURL }}" as="style">
   <link rel="preload" href="{{ "/css/hyde.css" | absURL }}" as="style">
